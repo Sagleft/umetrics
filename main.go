@@ -77,7 +77,7 @@ func (b *bot) checkChannels() {
 		}
 
 		if isExists {
-			return
+			continue
 		}
 
 		if err := b.Memory.SaveChannel(data); err != nil {
