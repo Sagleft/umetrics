@@ -18,6 +18,10 @@ type User struct {
 	IsModerator bool   `gorm:"type:bool;default:false;column:is_moderator" json:"is_moderator"`
 }
 
+func (User) TableName() string {
+	return "users"
+}
+
 /*
 original data:
 	AvatarID    string `json:"avatarId"`    // example: defAvatar_F10383EA72AC6263C21F356CD8D2E2A2
@@ -44,4 +48,8 @@ type Channel struct {
 	OwnerPubkeyHash string    `gorm:"type:varchar(32);column:owner_hash" json:"owner_hash"`
 	IsPrivate       bool      `gorm:"type:bool;default:false;column:is_private" json:"is_private"`
 	CreatedOn       time.Time `gorm:"column:created_on" json:"created_on"`
+}
+
+func (Channel) TableName() string {
+	return "channels"
 }
