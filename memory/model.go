@@ -7,7 +7,7 @@ import (
 )
 
 var models = []interface{}{
-	&User{},
+	&User{}, &Channel{},
 }
 
 type User struct {
