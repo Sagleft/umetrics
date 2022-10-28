@@ -1,3 +1,6 @@
 package memory
 
-type Memory interface{}
+type Memory interface {
+	IsChannelExists(channelID string) (bool, error)
+	SaveChannel(Channel) error
+}

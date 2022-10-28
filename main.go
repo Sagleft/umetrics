@@ -57,13 +57,32 @@ func (b *bot) run() error {
 }
 
 func (b *bot) checkChannels() {
-	_, err := b.Messenger.GetChannels()
+	channels, err := b.Messenger.GetChannels()
 	if err != nil {
 		log.Println(err)
 	}
 
-	//for _, channelData := range channels {
-	//	b.DB.First(&memory.Channel, "id = ?", channelData.ChannelID)
-	//}
+	for _, data := range channels {
+		isExists, err := b.Memory.IsChannelExists(data.ChannelID)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if !isExists {
+			if err := b.Memory.SaveChannel(memory.Channel{
+				ID:              data.ChannelID,
+				Title:           data.Title,
+				Description:     data.Description,
+				OwnerPubkey:     data.OwnerPubkey,
+				OwnerPubkeyHash: data.OwnerPubkeyHash,
+				IsPrivate:       data.IsPrivate,
+				CreatedOn:       data.CreatedOn,
+			}); err != nil {
+				log.Println(err)
+				return
+			}
+		}
+	}
 
 }

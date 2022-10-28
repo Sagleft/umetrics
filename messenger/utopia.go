@@ -3,6 +3,8 @@ package messenger
 import (
 	"time"
 
+	"bot/memory"
+
 	utopiago "github.com/Sagleft/utopialib-go"
 )
 
@@ -31,17 +33,17 @@ func parseTime(timeStr string) (time.Time, error) {
 	return time.Parse(time.RFC3339, timeStr)
 }
 
-func (u *utopia) GetChannels() ([]SearchChannelData, error) {
+func (u *utopia) GetChannels() ([]memory.Channel, error) {
 	channels, err := u.client.GetChannels(utopiago.GetChannelsTask{})
 	if err != nil {
 		return nil, err
 	}
 
-	r := make([]SearchChannelData, len(channels))
+	r := make([]memory.Channel, len(channels))
 	for i, data := range channels {
-		r[i] = SearchChannelData{
+		r[i] = memory.Channel{
+			ID:              data.ChannelID,
 			Title:           data.Name,
-			ChannelID:       data.ChannelID,
 			OwnerPubkey:     data.OwnerPubkey,
 			OwnerPubkeyHash: getMD5Hash(data.OwnerPubkey),
 			IsPrivate:       data.IsPrivate,
