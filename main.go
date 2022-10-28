@@ -17,6 +17,7 @@ const (
 	configJSONPath       = "config.json"
 	dbFilename           = "memory.db"
 	checkChannelsTimeout = time.Minute * 5
+	checkChannelsInStart = false
 )
 
 func main() {
@@ -71,7 +72,7 @@ func (b *bot) run() error {
 	b.ChannelsCron = cronContainer{
 		Cron: simplecron.NewCronHandler(b.checkChannels, checkChannelsTimeout),
 	}
-	b.ChannelsCron.Cron.Run(true)
+	b.ChannelsCron.Cron.Run(checkChannelsInStart)
 
 	// TODO: setup channels online cron
 	return nil
