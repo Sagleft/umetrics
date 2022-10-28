@@ -43,9 +43,20 @@ func main() {
 	swissknife.RunInBackground()
 }
 
+type cronContainer struct {
+	Cron      *simplecron.CronObject
+	InProcess bool
+}
+
+func (c *cronContainer) markProcessing(isProcessing bool) {
+	c.InProcess = isProcessing
+}
+
 type bot struct {
 	Memory    memory.Memory
 	Messenger messenger.Messenger
+
+	ChannelsCron cronContainer
 }
 
 func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
@@ -57,13 +68,22 @@ func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
 
 func (b *bot) run() error {
 	// setup channels list cron
-	simplecron.NewCronHandler(b.checkChannels, checkChannelsTimeout).Run(true)
+	b.ChannelsCron = cronContainer{
+		Cron: simplecron.NewCronHandler(b.checkChannels, checkChannelsTimeout),
+	}
+	b.ChannelsCron.Cron.Run(true)
 
 	// TODO: setup channels online cron
 	return nil
 }
 
 func (b *bot) checkChannels() {
+	if b.ChannelsCron.InProcess {
+		return
+	}
+	b.ChannelsCron.markProcessing(true)
+	defer b.ChannelsCron.markProcessing(false)
+
 	channels, err := b.Messenger.GetChannels()
 	if err != nil {
 		log.Println(err)
