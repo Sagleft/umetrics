@@ -1,1 +1,10 @@
-{}
+{
+    "utopia": {
+        "protocol": "http",
+        "token": "",
+        "host": "127.0.0.1",
+        "port": 22000,
+        "wsport": 25000,
+        "timeout": 10
+    }
+}

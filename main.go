@@ -10,7 +10,6 @@ import (
 	"bot/messenger"
 
 	swissknife "github.com/Sagleft/swiss-knife"
-	utopiago "github.com/Sagleft/utopialib-go"
 	simplecron "github.com/sagleft/simple-cron"
 )
 
@@ -52,7 +51,7 @@ type bot struct {
 func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
 	return &bot{
 		Memory:    db,
-		Messenger: messenger.NewUtopiaMessenger(utopiago.UtopiaClient{}),
+		Messenger: messenger.NewUtopiaMessenger(cfg.Utopia),
 	}, nil
 }
 

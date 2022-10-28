@@ -1,3 +1,9 @@
 package config
 
-type Config struct{}
+import (
+	utopiago "github.com/Sagleft/utopialib-go"
+)
+
+type Config struct {
+	Utopia utopiago.UtopiaClient `json:"utopia"`
+}
