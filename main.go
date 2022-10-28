@@ -1,11 +1,13 @@
 package main
 
 import (
-	"bot/memory"
-	"bot/messenger"
 	"fmt"
 	"log"
 	"time"
+
+	"bot/config"
+	"bot/memory"
+	"bot/messenger"
 
 	swissknife "github.com/Sagleft/swiss-knife"
 	utopiago "github.com/Sagleft/utopialib-go"
@@ -13,12 +15,23 @@ import (
 )
 
 const (
+	configJSONPath       = "config.json"
 	dbFilename           = "memory.db"
 	checkChannelsTimeout = time.Minute * 5
 )
 
 func main() {
-	b, err := newBot()
+	cfg, err := config.Parse(configJSONPath)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	db, err := memory.NewLocalDB(dbFilename)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	b, err := newBot(cfg, db)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -36,12 +49,7 @@ type bot struct {
 	Messenger messenger.Messenger
 }
 
-func newBot() (*bot, error) {
-	db, err := memory.NewLocalDB(dbFilename)
-	if err != nil {
-		return nil, err
-	}
-
+func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
 	return &bot{
 		Memory:    db,
 		Messenger: messenger.NewUtopiaMessenger(utopiago.UtopiaClient{}),
