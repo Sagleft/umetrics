@@ -3,14 +3,19 @@ package main
 import (
 	"bot/memory"
 	"bot/messenger"
+	"fmt"
 	"log"
+	"time"
 
+	swissknife "github.com/Sagleft/swiss-knife"
 	utopiago "github.com/Sagleft/utopialib-go"
+	simplecron "github.com/sagleft/simple-cron"
 	"gorm.io/gorm"
 )
 
 const (
-	dbFilename = "memory.db"
+	dbFilename           = "memory.db"
+	checkChannelsTimeout = time.Minute * 5
 )
 
 func main() {
@@ -22,6 +27,9 @@ func main() {
 	if err := newBot(db).run(); err != nil {
 		log.Fatalln(err)
 	}
+
+	fmt.Println("Bot started")
+	swissknife.RunInBackground()
 }
 
 type bot struct {
@@ -37,6 +45,12 @@ func newBot(db *gorm.DB) *bot {
 }
 
 func (b *bot) run() error {
+	simplecron.NewCronHandler(b.checkChannels, checkChannelsTimeout).Run(true)
+
 	// TODO
 	return nil
+}
+
+func (b *bot) checkChannels() {
+
 }
