@@ -34,20 +34,22 @@ func NewLocalDB(filename string) (Memory, error) {
 	}, nil
 }
 
-func (db *localDB) IsChannelExists(channelID string) (bool, error) {
-	channelEntry := Channel{
-		ID: channelID,
-	}
-
-	result := db.conn.First(&channelEntry)
+func (db *localDB) isEntryExists(entryPointer interface{}) (bool, error) {
+	result := db.conn.First(entryPointer)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return false, nil
 		}
 		return false, result.Error
 	}
-
 	return true, nil
+}
+
+func (db *localDB) IsChannelExists(channelID string) (bool, error) {
+	channelEntry := Channel{
+		ID: channelID,
+	}
+	return db.isEntryExists(&channelEntry)
 }
 
 func (db *localDB) SaveChannel(c Channel) error {
