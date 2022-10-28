@@ -63,26 +63,19 @@ func (b *bot) checkChannels() {
 	}
 
 	for _, data := range channels {
-		isExists, err := b.Memory.IsChannelExists(data.ChannelID)
+		isExists, err := b.Memory.IsChannelExists(data.ID)
 		if err != nil {
 			log.Println(err)
 			return
 		}
 
-		if !isExists {
-			if err := b.Memory.SaveChannel(memory.Channel{
-				ID:              data.ChannelID,
-				Title:           data.Title,
-				Description:     data.Description,
-				OwnerPubkey:     data.OwnerPubkey,
-				OwnerPubkeyHash: data.OwnerPubkeyHash,
-				IsPrivate:       data.IsPrivate,
-				CreatedOn:       data.CreatedOn,
-			}); err != nil {
-				log.Println(err)
-				return
-			}
+		if isExists {
+			return
+		}
+
+		if err := b.Memory.SaveChannel(data); err != nil {
+			log.Println(err)
+			return
 		}
 	}
-
 }
