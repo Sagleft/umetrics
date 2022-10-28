@@ -2,6 +2,21 @@ package messenger
 
 import "time"
 
+/*
+original data:
+	PubkeyHash  string `json:"hashedPk"`
+	LastSeen    string `json:"lastSeen"`
+	IsLocal     bool   `json:"local"`
+	IsModerator bool   `json:"moderator"`
+	Nick        string `json:"nick"`
+	Pubkey      string `json:"pk"`
+*/
+type ChannelContactData struct {
+	PubkeyHash  string
+	IsModerator bool
+	Nick        string
+}
+
 type ChannelData struct {
 	OnlineCount int
 }
@@ -23,10 +38,11 @@ RFC3339Nano = "2006-01-02T15:04:05.999999999Z07:00"
 
 */
 type SearchChannelData struct {
-	Name        string
-	ChannelID   string
-	OwnerPubkey string
-	IsPrivate   bool
-	Description string
-	CreatedOn   time.Time
+	Title           string
+	ChannelID       string
+	OwnerPubkey     string
+	OwnerPubkeyHash string
+	IsPrivate       bool
+	Description     string
+	CreatedOn       time.Time
 }

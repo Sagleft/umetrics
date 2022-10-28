@@ -40,11 +40,12 @@ func (u *utopia) GetChannels() ([]SearchChannelData, error) {
 	r := make([]SearchChannelData, len(channels))
 	for i, data := range channels {
 		r[i] = SearchChannelData{
-			Name:        data.Name,
-			ChannelID:   data.ChannelID,
-			OwnerPubkey: data.OwnerPubkey,
-			IsPrivate:   data.IsPrivate,
-			Description: data.Description,
+			Title:           data.Name,
+			ChannelID:       data.ChannelID,
+			OwnerPubkey:     data.OwnerPubkey,
+			OwnerPubkeyHash: getMD5Hash(data.OwnerPubkey),
+			IsPrivate:       data.IsPrivate,
+			Description:     data.Description,
 		}
 
 		r[i].CreatedOn, err = parseTime(data.CreatedOn)
