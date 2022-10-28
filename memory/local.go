@@ -41,10 +41,10 @@ func (db *localDB) IsChannelExists(channelID string) (bool, error) {
 
 	result := db.conn.First(&channelEntry)
 	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return false, nil
+		}
 		return false, result.Error
-	}
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return false, nil
 	}
 
 	return true, nil
