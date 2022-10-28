@@ -56,8 +56,11 @@ func (c *cronContainer) markProcessing(isProcessing bool) {
 type bot struct {
 	Memory    memory.Memory
 	Messenger messenger.Messenger
+	Handlers  botCrons
+}
 
-	ChannelsCron cronContainer
+type botCrons struct {
+	Channels cronContainer
 }
 
 func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
@@ -68,11 +71,13 @@ func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
 }
 
 func (b *bot) run() error {
-	// setup channels list cron
-	b.ChannelsCron = cronContainer{
-		Cron: simplecron.NewCronHandler(b.checkChannels, checkChannelsTimeout),
+	b.Handlers = botCrons{
+		Channels: cronContainer{
+			Cron: simplecron.NewCronHandler(b.checkChannels, checkChannelsTimeout),
+		},
 	}
-	b.ChannelsCron.Cron.Run(checkChannelsInStart)
+
+	go b.Handlers.Channels.Cron.Run(checkChannelsInStart)
 
 	// TODO: setup channels online cron
 	return nil

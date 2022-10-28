@@ -3,11 +3,11 @@ package main
 import "log"
 
 func (b *bot) checkChannels() {
-	if b.ChannelsCron.InProcess {
+	if b.Handlers.Channels.InProcess {
 		return
 	}
-	b.ChannelsCron.markProcessing(true)
-	defer b.ChannelsCron.markProcessing(false)
+	b.Handlers.Channels.markProcessing(true)
+	defer b.Handlers.Channels.markProcessing(false)
 
 	channels, err := b.Messenger.GetChannels()
 	if err != nil {
