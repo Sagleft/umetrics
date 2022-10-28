@@ -2,7 +2,7 @@ module bot
 
 go 1.18
 
-require github.com/Sagleft/utopialib-go v1.9.6
+require github.com/Sagleft/utopialib-go v1.10.1
 
 require (
 	github.com/ctengiz/evtwebsocket v0.0.0-20180717104640-fc3583982591 // indirect
