@@ -17,9 +17,14 @@ type utopia struct {
 }
 
 func (u *utopia) GetStats(channelID string) (ChannelData, error) {
-	// TODO
+	channelContacts, err := u.client.GetChannelContacts(channelID)
+	if err != nil {
+		return ChannelData{}, err
+	}
 
-	return ChannelData{}, nil
+	return ChannelData{
+		OnlineCount: len(channelContacts),
+	}, nil
 }
 
 func parseTime(timeStr string) (time.Time, error) {

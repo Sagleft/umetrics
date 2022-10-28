@@ -2,7 +2,9 @@ package messenger
 
 import "time"
 
-type ChannelData struct{}
+type ChannelData struct {
+	OnlineCount int
+}
 
 /*
 original data:
