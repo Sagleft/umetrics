@@ -10,7 +10,6 @@ import (
 	swissknife "github.com/Sagleft/swiss-knife"
 	utopiago "github.com/Sagleft/utopialib-go"
 	simplecron "github.com/sagleft/simple-cron"
-	"gorm.io/gorm"
 )
 
 const (
@@ -19,12 +18,12 @@ const (
 )
 
 func main() {
-	db, err := memory.InitDB(dbFilename)
+	b, err := newBot()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	if err := newBot(db).run(); err != nil {
+	if b.run(); err != nil {
 		log.Fatalln(err)
 	}
 
@@ -33,24 +32,38 @@ func main() {
 }
 
 type bot struct {
-	DB        *gorm.DB
+	Memory    memory.Memory
 	Messenger messenger.Messenger
 }
 
-func newBot(db *gorm.DB) *bot {
-	return &bot{
-		DB:        db,
-		Messenger: messenger.NewUtopiaMessenger(utopiago.UtopiaClient{}),
+func newBot() (*bot, error) {
+	db, err := memory.NewLocalDB(dbFilename)
+	if err != nil {
+		return nil, err
 	}
+
+	return &bot{
+		Memory:    db,
+		Messenger: messenger.NewUtopiaMessenger(utopiago.UtopiaClient{}),
+	}, nil
 }
 
 func (b *bot) run() error {
+	// setup channels list cron
 	simplecron.NewCronHandler(b.checkChannels, checkChannelsTimeout).Run(true)
 
-	// TODO
+	// TODO: setup channels online cron
 	return nil
 }
 
 func (b *bot) checkChannels() {
+	_, err := b.Messenger.GetChannels()
+	if err != nil {
+		log.Println(err)
+	}
+
+	//for _, channelData := range channels {
+	//	b.DB.First(&memory.Channel, "id = ?", channelData.ChannelID)
+	//}
 
 }

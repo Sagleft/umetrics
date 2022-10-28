@@ -8,7 +8,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitDB(filename string) (*gorm.DB, error) {
+type Memory interface{}
+
+type defaultDB struct {
+	conn *gorm.DB
+}
+
+func NewLocalDB(filename string) (Memory, error) {
 	if !swissknife.IsFileExists(filename) {
 		return nil, fmt.Errorf("db file not found: %q", filename)
 	}
@@ -25,5 +31,7 @@ func InitDB(filename string) (*gorm.DB, error) {
 		}
 	}
 
-	return db, nil
+	return &defaultDB{
+		conn: db,
+	}, nil
 }
