@@ -20,7 +20,7 @@ const (
 	checkChannelsTimeout     = time.Minute * 5
 	checkChannelsInStart     = true
 	queueDefaultMaxCapacity  = 1000
-	limitMaxJoinChannelTasks = 3 // per second
+	limitMaxJoinChannelTasks = 3 * time.Second // per second
 )
 
 func main() {

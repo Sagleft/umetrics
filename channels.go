@@ -34,8 +34,10 @@ func (b *bot) checkChannels() {
 			}
 		}
 
-		if _, isJoined := joinedChannels[data.ID]; !isJoined {
-			b.addJoinChannelTask(joinChannelTask{ChannelID: data.ID})
+		if !data.IsPrivate {
+			if _, isJoined := joinedChannels[data.ID]; !isJoined {
+				b.addJoinChannelTask(joinChannelTask{ChannelID: data.ID})
+			}
 		}
 	}
 }
@@ -46,7 +48,5 @@ type joinChannelTask struct {
 }
 
 func (b *bot) addJoinChannelTask(task joinChannelTask) {
-	log.Println("add joinchannel task")
-
 	b.Workers.JoinChannel.W.AddEvent(task)
 }
