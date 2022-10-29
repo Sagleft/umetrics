@@ -27,13 +27,11 @@ func (b *bot) checkChannels() {
 			return
 		}
 
-		if isExists {
-			continue
-		}
-
-		if err := b.Memory.SaveChannel(data); err != nil {
-			log.Println(err)
-			return
+		if !isExists {
+			if err := b.Memory.SaveChannel(data); err != nil {
+				log.Println(err)
+				return
+			}
 		}
 
 		if _, isJoined := joinedChannels[data.ID]; isJoined {

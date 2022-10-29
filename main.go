@@ -17,7 +17,7 @@ const (
 	configJSONPath          = "config.json"
 	dbFilename              = "memory.db"
 	checkChannelsTimeout    = time.Minute * 5
-	checkChannelsInStart    = false
+	checkChannelsInStart    = true
 	queueDefaultMaxCapacity = 1000
 )
 
