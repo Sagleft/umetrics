@@ -83,3 +83,7 @@ func (u *utopia) GetJoinedChannels() (map[string]struct{}, error) {
 	}
 	return channelIDs, nil
 }
+
+func (u *utopia) ToogleChannelNotifications(channelID string, enabled bool) error {
+	return u.client.ToogleChannelNotifications(channelID, enabled)
+}

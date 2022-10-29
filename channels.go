@@ -34,16 +34,19 @@ func (b *bot) checkChannels() {
 			}
 		}
 
-		if _, isJoined := joinedChannels[data.ID]; isJoined {
+		if _, isJoined := joinedChannels[data.ID]; !isJoined {
 			b.addJoinChannelTask(joinChannelTask{ChannelID: data.ID})
 		}
 	}
 }
 
 type joinChannelTask struct {
-	ChannelID string
+	ChannelID           string
+	EnableNotifications bool
 }
 
 func (b *bot) addJoinChannelTask(task joinChannelTask) {
-	b.Workers.JoinChannel.AddEvent(task)
+	log.Println("add joinchannel task")
+
+	b.Workers.JoinChannel.W.AddEvent(task)
 }

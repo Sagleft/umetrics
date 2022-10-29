@@ -10,15 +10,17 @@ import (
 	"bot/messenger"
 
 	swissknife "github.com/Sagleft/swiss-knife"
+	"github.com/beefsack/go-rate"
 	simplecron "github.com/sagleft/simple-cron"
 )
 
 const (
-	configJSONPath          = "config.json"
-	dbFilename              = "memory.db"
-	checkChannelsTimeout    = time.Minute * 5
-	checkChannelsInStart    = true
-	queueDefaultMaxCapacity = 1000
+	configJSONPath           = "config.json"
+	dbFilename               = "memory.db"
+	checkChannelsTimeout     = time.Minute * 5
+	checkChannelsInStart     = true
+	queueDefaultMaxCapacity  = 1000
+	limitMaxJoinChannelTasks = 3 // per second
 )
 
 func main() {
@@ -61,8 +63,13 @@ type bot struct {
 	Workers   queueWorkers
 }
 
+type queueWorker struct {
+	W       *swissknife.ChannelWorker
+	Limiter *rate.RateLimiter
+}
+
 type queueWorkers struct {
-	JoinChannel *swissknife.ChannelWorker
+	JoinChannel queueWorker
 }
 
 type botCrons struct {
@@ -77,15 +84,21 @@ func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
 }
 
 func (b *bot) run() error {
-	b.Workers.JoinChannel = swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity)
-	go b.Workers.JoinChannel.Start()
+	// setup queues
+	b.Workers = queueWorkers{
+		JoinChannel: queueWorker{
+			W:       swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity),
+			Limiter: rate.New(1, limitMaxJoinChannelTasks),
+		},
+	}
+	go b.Workers.JoinChannel.W.Start()
 
+	// setup cron
 	b.Handlers = botCrons{
 		Channels: cronContainer{
 			Cron: simplecron.NewCronHandler(b.checkChannels, checkChannelsTimeout),
 		},
 	}
-
 	go b.Handlers.Channels.Cron.Run(checkChannelsInStart)
 
 	// TODO: setup channels online cron
