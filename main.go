@@ -14,10 +14,11 @@ import (
 )
 
 const (
-	configJSONPath       = "config.json"
-	dbFilename           = "memory.db"
-	checkChannelsTimeout = time.Minute * 5
-	checkChannelsInStart = false
+	configJSONPath          = "config.json"
+	dbFilename              = "memory.db"
+	checkChannelsTimeout    = time.Minute * 5
+	checkChannelsInStart    = false
+	queueDefaultMaxCapacity = 1000
 )
 
 func main() {
@@ -57,6 +58,11 @@ type bot struct {
 	Memory    memory.Memory
 	Messenger messenger.Messenger
 	Handlers  botCrons
+	Workers   queueWorkers
+}
+
+type queueWorkers struct {
+	JoinChannel *swissknife.ChannelWorker
 }
 
 type botCrons struct {
@@ -71,6 +77,9 @@ func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
 }
 
 func (b *bot) run() error {
+	b.Workers.JoinChannel = swissknife.NewChannelWorker(b.onJoinchatTask, queueDefaultMaxCapacity)
+	go b.Workers.JoinChannel.Start()
+
 	b.Handlers = botCrons{
 		Channels: cronContainer{
 			Cron: simplecron.NewCronHandler(b.checkChannels, checkChannelsTimeout),
