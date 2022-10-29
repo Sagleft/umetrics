@@ -14,6 +14,12 @@ func (b *bot) checkChannels() {
 		log.Println(err)
 	}
 
+	joinedChannels, err := b.Messenger.GetJoinedChannels()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	for _, data := range channels {
 		isExists, err := b.Memory.IsChannelExists(data.ID)
 		if err != nil {
@@ -28,6 +34,10 @@ func (b *bot) checkChannels() {
 		if err := b.Memory.SaveChannel(data); err != nil {
 			log.Println(err)
 			return
+		}
+
+		if _, isJoined := joinedChannels[data.ID]; isJoined {
+			b.addJoinChannelTask(joinChannelTask{ChannelID: data.ID})
 		}
 	}
 }

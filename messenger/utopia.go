@@ -68,3 +68,18 @@ func (u *utopia) JoinChannel(channelID, password string) error {
 	}
 	return err
 }
+
+func (u *utopia) GetJoinedChannels() (map[string]struct{}, error) {
+	channels, err := u.client.GetChannels(utopiago.GetChannelsTask{
+		ChannelType: utopiago.ChannelTypeJoined,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	channelIDs := make(map[string]struct{})
+	for _, data := range channels {
+		channelIDs[data.ChannelID] = struct{}{}
+	}
+	return channelIDs, nil
+}
