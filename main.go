@@ -77,7 +77,7 @@ func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
 }
 
 func (b *bot) run() error {
-	b.Workers.JoinChannel = swissknife.NewChannelWorker(b.onJoinchatTask, queueDefaultMaxCapacity)
+	b.Workers.JoinChannel = swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity)
 	go b.Workers.JoinChannel.Start()
 
 	b.Handlers = botCrons{

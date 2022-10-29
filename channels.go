@@ -31,3 +31,11 @@ func (b *bot) checkChannels() {
 		}
 	}
 }
+
+type joinChannelTask struct {
+	ChannelID string
+}
+
+func (b *bot) addJoinChannelTask(task joinChannelTask) {
+	b.Workers.JoinChannel.AddEvent(task)
+}
