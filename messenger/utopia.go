@@ -58,3 +58,13 @@ func (u *utopia) GetChannels() ([]memory.Channel, error) {
 
 	return r, nil
 }
+
+func (u *utopia) JoinChannel(channelID, password string) error {
+	var err error
+	if password == "" {
+		_, err = u.client.JoinChannel(channelID)
+	} else {
+		_, err = u.client.JoinChannel(channelID, password)
+	}
+	return err
+}
