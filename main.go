@@ -15,8 +15,8 @@ import (
 const (
 	configJSONPath              = "config.json"
 	dbFilename                  = "memory.db"
-	checkChannelsTimeout        = time.Minute * 10
-	checkChannelContactsTimeout = time.Minute * 5
+	checkChannelsTimeout        = time.Minute * 15
+	checkChannelContactsTimeout = time.Minute * 10
 	checkChannelsInStart        = false
 	checkContactsInStart        = true
 	queueDefaultMaxCapacity     = 1000

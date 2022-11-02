@@ -39,13 +39,16 @@ func NewUtopiaMessenger(clientData utopiago.UtopiaClient) Messenger {
 func (u *utopia) GetChannels() ([]memory.Channel, error) {
 	u.limiters.GetChannels.Wait()
 
-	channels, err := u.client.GetChannels(utopiago.GetChannelsTask{})
+	channels, err := u.client.GetChannels(utopiago.GetChannelsTask{
+		SortBy: utopiago.SortChannelsByModified,
+	})
 	if err != nil {
 		return nil, err
 	}
 
 	r := make([]memory.Channel, len(channels))
-	for i, data := range channels {
+	for i := len(channels) - 1; i >= 0; i-- {
+		data := channels[i]
 		r[i] = memory.Channel{
 			ID:              data.ChannelID,
 			Title:           data.Name,
