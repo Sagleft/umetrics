@@ -42,6 +42,8 @@ func (b *bot) saveChannelIFNotExists(channel memory.Channel) error {
 	if isExists {
 		return nil
 	}
+
+	color.Green("save new channel: %s", channel.Title)
 	return b.Memory.SaveChannel(channel)
 }
 
