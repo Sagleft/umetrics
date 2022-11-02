@@ -62,15 +62,15 @@ func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
 
 func (b *bot) run() error {
 	// setup queues
-	go swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity).SetAsync(false).Start()
-	go swissknife.NewChannelWorker(b.checkChannelContact, queueDefaultMaxCapacity).SetAsync(false)
 
-	/*b.Workers = queueWorkers{
-		JoinChannel:         swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity).SetAsync(false),
-		CheckChannelContact: swissknife.NewChannelWorker(b.checkChannelContact, queueDefaultMaxCapacity).SetAsync(false),
+	b.Workers = queueWorkers{
+		JoinChannel: swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity).
+			SetAsync(false),
+		CheckChannelContact: swissknife.NewChannelWorker(b.checkChannelContact, queueDefaultMaxCapacity).
+			SetAsync(false),
 	}
 	go b.Workers.JoinChannel.Start()
-	go b.Workers.CheckChannelContact.Start()*/
+	go b.Workers.CheckChannelContact.Start()
 
 	// setup cron
 	b.Handlers = botCrons{
