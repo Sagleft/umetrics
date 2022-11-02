@@ -72,7 +72,7 @@ func (b *bot) checkChannelContact(event interface{}) {
 	defer b.Handlers.ChannelContacts.markProcessing(false)
 
 	e := event.(checkChannelTask)
-	log.Println("check channel " + e.Channel.Title + "..")
+	fmt.Printf("check channel %s.. ", e.Channel.Title)
 
 	if err := b.Messenger.JoinChannel(e.Channel.ID, ""); err != nil {
 		color.Red("failed to join to %s: %w", e.Channel.ID, err)
@@ -82,15 +82,20 @@ func (b *bot) checkChannelContact(event interface{}) {
 	queryTimestamp := time.Now()
 	contacts, err := b.Messenger.GetChannelContacts(e.Channel.ID)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return
 	}
 
+	fmt.Printf("%v online", len(contacts))
+	fmt.Println()
 	if len(contacts) == 0 {
 		return
 	}
 
 	for _, contact := range contacts {
+		fmt.Printf("check user %s..", contact.Nick)
+		fmt.Println()
+
 		if err := b.saveUserIfNotExists(memory.User{
 			PubkeyHash: contact.PubkeyHash,
 			Nickname:   contact.Nick,
