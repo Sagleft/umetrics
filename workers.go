@@ -2,11 +2,13 @@ package main
 
 import (
 	"bot/memory"
+	"fmt"
 	"log"
 	"time"
 
 	swissknife "github.com/Sagleft/swiss-knife"
 	"github.com/beefsack/go-rate"
+	"github.com/fatih/color"
 )
 
 type queueWorker struct {
@@ -25,12 +27,15 @@ type joinChannelTask struct {
 }
 
 type checkChannelTask struct {
-	Title string
-	ID    string
+	Channel memory.Channel
 }
 
 func (b *bot) handleJoinChannelTask(event interface{}) {
-	b.Workers.JoinChannel.Limiter.Wait()
+	if b.Handlers.Channels.InProcess {
+		return
+	}
+	b.Handlers.Channels.markProcessing(true)
+	defer b.Handlers.Channels.markProcessing(false)
 
 	e := event.(joinChannelTask)
 	log.Println("join to channel " + e.ChannelID)
@@ -56,17 +61,32 @@ func (b *bot) saveUserIfNotExists(u memory.User) error {
 		return nil
 	}
 
-	return b.Memory.SaveUser(u)
+	if err := b.Memory.SaveUser(u); err != nil {
+		return err
+	}
+
+	log.Printf("new user saved: %s", u.Nickname)
+	fmt.Println()
+	return nil
 }
 
 func (b *bot) checkChannelContact(event interface{}) {
-	b.Workers.CheckChannelContact.Limiter.Wait()
+	if b.Handlers.ChannelContacts.InProcess {
+		return
+	}
+	b.Handlers.ChannelContacts.markProcessing(true)
+	defer b.Handlers.ChannelContacts.markProcessing(false)
 
 	e := event.(checkChannelTask)
-	log.Println("check channel " + e.Title + "..")
+	log.Println("check channel " + e.Channel.Title + "..")
+
+	if err := b.Messenger.JoinChannel(e.Channel.ID, ""); err != nil {
+		color.Red("failed to join to %s: %w", e.Channel.ID, err)
+		return
+	}
 
 	queryTimestamp := time.Now()
-	contacts, err := b.Messenger.GetChannelContacts(e.ID)
+	contacts, err := b.Messenger.GetChannelContacts(e.Channel.ID)
 	if err != nil {
 		log.Println(err)
 		return
@@ -76,7 +96,6 @@ func (b *bot) checkChannelContact(event interface{}) {
 		return
 	}
 
-	usersSaved := 0
 	for _, contact := range contacts {
 		if err := b.saveUserIfNotExists(memory.User{
 			PubkeyHash: contact.PubkeyHash,
@@ -86,11 +105,5 @@ func (b *bot) checkChannelContact(event interface{}) {
 			log.Println(err)
 			return
 		}
-
-		usersSaved++
-	}
-
-	if usersSaved > 0 {
-		log.Printf("new users saved: %v", usersSaved)
 	}
 }

@@ -21,7 +21,7 @@ const (
 	checkChannelsInStart        = false
 	checkContactsInStart        = true
 	queueDefaultMaxCapacity     = 1000
-	limitMaxJoinChannelTasks    = 3  // per second
+	limitMaxJoinChannelTasks    = 10 // per second
 	limitMaxCheckChannelTasks   = 30 // per second
 )
 

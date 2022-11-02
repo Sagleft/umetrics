@@ -2,21 +2,43 @@ package messenger
 
 import (
 	"bot/memory"
+	"time"
 
 	utopiago "github.com/Sagleft/utopialib-go"
+	"github.com/beefsack/go-rate"
 )
+
+const (
+	maxGetChannelsTasks        = 5
+	maxJoinChannelTasks        = 5  // per second
+	maxGetChannelContactsTasks = 10 // per second
+)
+
+type utopia struct {
+	client   *utopiago.UtopiaClient
+	limiters rateLimiters
+}
+
+type rateLimiters struct {
+	GetChannels        *rate.RateLimiter
+	JoinChannel        *rate.RateLimiter
+	GetChannelContacts *rate.RateLimiter
+}
 
 func NewUtopiaMessenger(clientData utopiago.UtopiaClient) Messenger {
 	return &utopia{
 		client: &clientData,
+		limiters: rateLimiters{
+			GetChannels:        rate.New(maxGetChannelsTasks, time.Second),
+			JoinChannel:        rate.New(maxJoinChannelTasks, time.Second),
+			GetChannelContacts: rate.New(maxGetChannelContactsTasks, time.Second),
+		},
 	}
 }
 
-type utopia struct {
-	client *utopiago.UtopiaClient
-}
-
 func (u *utopia) GetChannels() ([]memory.Channel, error) {
+	u.limiters.GetChannels.Wait()
+
 	channels, err := u.client.GetChannels(utopiago.GetChannelsTask{})
 	if err != nil {
 		return nil, err
@@ -43,10 +65,14 @@ func (u *utopia) GetChannels() ([]memory.Channel, error) {
 }
 
 func (u *utopia) GetChannelContacts(channelID string) ([]utopiago.ChannelContactData, error) {
+	u.limiters.GetChannelContacts.Wait()
+
 	return u.client.GetChannelContacts(channelID)
 }
 
 func (u *utopia) JoinChannel(channelID, password string) error {
+	u.limiters.JoinChannel.Wait()
+
 	var err error
 	if password == "" {
 		_, err = u.client.JoinChannel(channelID)

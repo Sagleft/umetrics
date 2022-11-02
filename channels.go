@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"fmt"
+	"log"
+)
 
 func (b *bot) checkChannels() {
 	if b.Handlers.Channels.InProcess {
@@ -19,6 +22,9 @@ func (b *bot) checkChannels() {
 		log.Println(err)
 		return
 	}
+
+	fmt.Printf("joined to %v channels", len(joinedChannels))
+	fmt.Println()
 
 	for _, data := range channels {
 		isExists, err := b.Memory.IsChannelExists(data.ID)
