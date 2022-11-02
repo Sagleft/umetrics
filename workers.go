@@ -19,11 +19,18 @@ type checkChannelTask struct {
 }
 
 func (b *bot) saveUser(u memory.User) error {
+	isUserKnown, err := b.Memory.IsUserExists(u.PubkeyHash)
+	if err != nil {
+		return err
+	}
+
 	if err := b.Memory.SaveUser(u); err != nil {
 		return err
 	}
 
-	color.Green("new user saved: %s", u.Nickname)
+	if !isUserKnown {
+		color.Green("new user saved: %s", u.Nickname)
+	}
 	return nil
 }
 
