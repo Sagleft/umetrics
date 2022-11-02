@@ -3,7 +3,7 @@ package main
 import "log"
 
 func (b *bot) checkUsers() {
-	channels, err := b.Memory.GetChannels()
+	channels, err := b.Messenger.GetChannels()
 	if err != nil {
 		log.Println(err)
 		return

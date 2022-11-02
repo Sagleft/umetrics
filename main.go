@@ -19,7 +19,7 @@ const (
 	checkChannelContactsTimeout = time.Minute * 10
 	checkChannelsInStart        = false
 	checkContactsInStart        = true
-	queueDefaultMaxCapacity     = 1000
+	queueDefaultMaxCapacity     = 3000
 )
 
 type bot struct {
