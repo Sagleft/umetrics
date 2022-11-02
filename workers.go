@@ -19,14 +19,6 @@ type checkChannelTask struct {
 }
 
 func (b *bot) saveUser(u memory.User) error {
-	/*isUserKnown, err := b.Memory.IsUserExists(u.PubkeyHash)
-	if err != nil {
-		return err
-	}
-	if isUserKnown {
-		return nil
-	}*/
-
 	if err := b.Memory.SaveUser(u); err != nil {
 		return err
 	}
@@ -46,7 +38,7 @@ func (b *bot) saveChannelIFNotExists(channel memory.Channel) error {
 	return b.Memory.SaveChannel(channel)
 }
 
-func (b *bot) checkStats(event interface{}) {
+func (b *bot) handleCheckStatsTask(event interface{}) {
 	if b.Handlers.ChannelContacts.InProcess {
 		return
 	}

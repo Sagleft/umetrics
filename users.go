@@ -2,8 +2,8 @@ package main
 
 import "log"
 
-func (b *bot) checkUsers() {
-	channels, err := b.Messenger.GetChannels()
+func (b *bot) checkStats() {
+	channels, err := b.Memory.GetChannels()
 	if err != nil {
 		log.Println(err)
 		return

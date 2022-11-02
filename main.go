@@ -77,7 +77,7 @@ func (b *bot) run() error {
 	// setup queues
 	b.Workers = queueWorkers{
 		CheckStats: swissknife.NewChannelWorker(
-			b.checkStats,
+			b.handleCheckStatsTask,
 			queueDefaultMaxCapacity,
 		).SetAsync(false),
 	}
@@ -85,7 +85,7 @@ func (b *bot) run() error {
 
 	// setup cron
 	b.Handlers = botCrons{
-		ChannelContacts: setupCronHandler(b.checkUsers, checkChannelContactsTimeout, checkStatsAtStart),
+		ChannelContacts: setupCronHandler(b.checkStats, checkChannelContactsTimeout, checkStatsAtStart),
 	}
 	return nil
 }
