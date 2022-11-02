@@ -17,8 +17,8 @@ const (
 	dbFilename                  = "memory.db"
 	checkChannelContactsTimeout = time.Minute * 10
 	findChannelsTimeout         = time.Minute * 15
-	checkStatsAtStart           = false
-	findChannelsAtStart         = true
+	checkStatsAtStart           = true
+	findChannelsAtStart         = false
 	queueDefaultMaxCapacity     = 3000
 )
 
