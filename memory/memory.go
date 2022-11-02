@@ -6,4 +6,6 @@ type Memory interface {
 
 	IsUserExists(userPubkeyHash string) (bool, error)
 	SaveUser(User) error
+
+	GetChannels() ([]Channel, error)
 }

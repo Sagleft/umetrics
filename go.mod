@@ -3,7 +3,7 @@ module bot
 go 1.18
 
 require (
-	github.com/Sagleft/swiss-knife v1.1.0
+	github.com/Sagleft/swiss-knife v1.2.0
 	github.com/Sagleft/utopialib-go v1.10.2
 	github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0
 	github.com/sagleft/simple-cron v1.4.1

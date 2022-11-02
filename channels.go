@@ -42,11 +42,6 @@ func (b *bot) checkChannels() {
 	}
 }
 
-type joinChannelTask struct {
-	ChannelID           string
-	EnableNotifications bool
-}
-
 func (b *bot) addJoinChannelTask(task joinChannelTask) {
 	b.Workers.JoinChannel.W.AddEvent(task)
 }

@@ -60,3 +60,9 @@ func (db *localDB) IsUserExists(userPubkeyHash string) (bool, error) {
 func (db *localDB) SaveUser(u User) error {
 	return db.conn.Save(&u).Error
 }
+
+func (db *localDB) GetChannels() ([]Channel, error) {
+	channels := []Channel{}
+	result := db.conn.Find(&channels)
+	return channels, result.Error
+}

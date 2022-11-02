@@ -22,6 +22,7 @@ const (
 	checkContactsInStart        = true
 	queueDefaultMaxCapacity     = 1000
 	limitMaxJoinChannelTasks    = 3 * time.Second // per second
+	limitMaxCheckChannelTasks   = 3 * time.Second // per second
 )
 
 type bot struct {
@@ -29,15 +30,6 @@ type bot struct {
 	Messenger messenger.Messenger
 	Handlers  botCrons
 	Workers   queueWorkers
-}
-
-type queueWorker struct {
-	W       *swissknife.ChannelWorker
-	Limiter *rate.RateLimiter
-}
-
-type queueWorkers struct {
-	JoinChannel queueWorker
 }
 
 func main() {
@@ -75,11 +67,16 @@ func (b *bot) run() error {
 	// setup queues
 	b.Workers = queueWorkers{
 		JoinChannel: queueWorker{
-			W:       swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity),
+			W:       swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity).SetAsync(false),
 			Limiter: rate.New(1, limitMaxJoinChannelTasks),
+		},
+		CheckChannelContact: queueWorker{
+			W:       swissknife.NewChannelWorker(b.checkChannelContact, queueDefaultMaxCapacity).SetAsync(false),
+			Limiter: rate.New(1, limitMaxCheckChannelTasks),
 		},
 	}
 	go b.Workers.JoinChannel.W.Start()
+	go b.Workers.CheckChannelContact.W.Start()
 
 	// setup cron
 	b.Handlers = botCrons{
