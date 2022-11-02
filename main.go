@@ -15,10 +15,8 @@ import (
 const (
 	configJSONPath              = "config.json"
 	dbFilename                  = "memory.db"
-	checkChannelsTimeout        = time.Minute * 150000 // ~disabled
 	checkChannelContactsTimeout = time.Minute * 10
-	checkChannelsInStart        = false
-	checkContactsInStart        = true
+	checkStatsAtStart           = true
 	queueDefaultMaxCapacity     = 3000
 )
 
@@ -87,7 +85,7 @@ func (b *bot) run() error {
 
 	// setup cron
 	b.Handlers = botCrons{
-		ChannelContacts: setupCronHandler(b.checkUsers, checkChannelContactsTimeout, checkContactsInStart),
+		ChannelContacts: setupCronHandler(b.checkUsers, checkChannelContactsTimeout, checkStatsAtStart),
 	}
 	return nil
 }

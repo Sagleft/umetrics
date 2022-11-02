@@ -32,7 +32,7 @@ type Channel struct {
 	OwnerPubkeyHash string    `gorm:"type:varchar(32);column:owner_hash"`
 	IsPrivate       bool      `gorm:"type:bool;default:false;column:is_private"`
 	CreatedOn       time.Time `gorm:"column:created_on"`
-	LastOnline      int       `gorm:"column:last_online"`
+	LastOnline      int       `gorm:"column:last_online;default:0"`
 }
 
 func (Channel) TableName() string {

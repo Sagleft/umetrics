@@ -18,14 +18,14 @@ type checkChannelTask struct {
 	Channel memory.Channel
 }
 
-func (b *bot) saveUserIfNotExists(u memory.User) error {
-	isUserKnown, err := b.Memory.IsUserExists(u.PubkeyHash)
+func (b *bot) saveUser(u memory.User) error {
+	/*isUserKnown, err := b.Memory.IsUserExists(u.PubkeyHash)
 	if err != nil {
 		return err
 	}
 	if isUserKnown {
 		return nil
-	}
+	}*/
 
 	if err := b.Memory.SaveUser(u); err != nil {
 		return err
@@ -35,18 +35,15 @@ func (b *bot) saveUserIfNotExists(u memory.User) error {
 	return nil
 }
 
-func (b *bot) saveChannelIfNotExists(channel memory.Channel) error {
+func (b *bot) saveChannelIFNotExists(channel memory.Channel) error {
 	isExists, err := b.Memory.IsChannelExists(channel.ID)
 	if err != nil {
 		return err
 	}
-
-	if !isExists {
-		if err := b.Memory.SaveChannel(channel); err != nil {
-			return err
-		}
+	if isExists {
+		return nil
 	}
-	return nil
+	return b.Memory.SaveChannel(channel)
 }
 
 func (b *bot) checkStats(event interface{}) {
@@ -74,7 +71,7 @@ func (b *bot) checkStats(event interface{}) {
 
 	e.Channel.LastOnline = len(contacts)
 
-	if err := b.saveChannelIfNotExists(e.Channel); err != nil {
+	if err := b.Memory.SaveChannel(e.Channel); err != nil {
 		color.Red(err.Error())
 		return
 	}
@@ -101,7 +98,7 @@ func (b *bot) processChannelContacts(
 			continue
 		}
 
-		if err := b.saveUserIfNotExists(memory.User{
+		if err := b.saveUser(memory.User{
 			PubkeyHash: contact.PubkeyHash,
 			Nickname:   contact.Nick,
 			LastSeen:   queryTimestamp,
