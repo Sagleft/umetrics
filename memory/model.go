@@ -25,13 +25,14 @@ func (User) TableName() string {
 type Channel struct {
 	gorm.Model
 
-	ID              string    `gorm:"type:varchar(32);column:id;unique_index" json:"id"`
-	Title           string    `gorm:"type:varchar(96);column:title" json:"title"`
-	Description     string    `gorm:"type:varchar(256);column:description" json:"description"`
-	OwnerPubkey     string    `gorm:"type:varchar(64);column:owner_pubkey" json:"owner_pubkey"`
-	OwnerPubkeyHash string    `gorm:"type:varchar(32);column:owner_hash" json:"owner_hash"`
-	IsPrivate       bool      `gorm:"type:bool;default:false;column:is_private" json:"is_private"`
-	CreatedOn       time.Time `gorm:"column:created_on" json:"created_on"`
+	ID              string    `gorm:"type:varchar(32);column:id;unique_index"`
+	Title           string    `gorm:"type:varchar(96);column:title"`
+	Description     string    `gorm:"type:varchar(256);column:description"`
+	OwnerPubkey     string    `gorm:"type:varchar(64);column:owner_pubkey"`
+	OwnerPubkeyHash string    `gorm:"type:varchar(32);column:owner_hash"`
+	IsPrivate       bool      `gorm:"type:bool;default:false;column:is_private"`
+	CreatedOn       time.Time `gorm:"column:created_on"`
+	LastOnline      int       `gorm:"column:last_online"`
 }
 
 func (Channel) TableName() string {

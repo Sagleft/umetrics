@@ -16,7 +16,6 @@ func (c *cronContainer) markProcessing(isProcessing bool) {
 }
 
 type botCrons struct {
-	Channels        *cronContainer
 	ChannelContacts *cronContainer
 }
 

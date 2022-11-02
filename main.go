@@ -15,7 +15,7 @@ import (
 const (
 	configJSONPath              = "config.json"
 	dbFilename                  = "memory.db"
-	checkChannelsTimeout        = time.Minute * 15
+	checkChannelsTimeout        = time.Minute * 150000 // ~disabled
 	checkChannelContactsTimeout = time.Minute * 10
 	checkChannelsInStart        = false
 	checkContactsInStart        = true
@@ -77,19 +77,16 @@ func (b *bot) loadOwnContact() error {
 
 func (b *bot) run() error {
 	// setup queues
-
 	b.Workers = queueWorkers{
-		JoinChannel: swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity).
-			SetAsync(false),
-		CheckChannelContact: swissknife.NewChannelWorker(b.checkChannelContact, queueDefaultMaxCapacity).
-			SetAsync(false),
+		CheckStats: swissknife.NewChannelWorker(
+			b.checkStats,
+			queueDefaultMaxCapacity,
+		).SetAsync(false),
 	}
-	go b.Workers.JoinChannel.Start()
-	go b.Workers.CheckChannelContact.Start()
+	go b.Workers.CheckStats.Start()
 
 	// setup cron
 	b.Handlers = botCrons{
-		Channels:        setupCronHandler(b.checkChannels, checkChannelsTimeout, checkChannelsInStart),
 		ChannelContacts: setupCronHandler(b.checkUsers, checkChannelContactsTimeout, checkContactsInStart),
 	}
 	return nil
