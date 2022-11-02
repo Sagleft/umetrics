@@ -3,9 +3,13 @@ package memory
 import (
 	"errors"
 	"fmt"
+	"log"
+	"os"
+	"time"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type localDB struct {
@@ -13,7 +17,19 @@ type localDB struct {
 }
 
 func NewLocalDB(filename string) (Memory, error) {
-	db, err := gorm.Open(sqlite.Open(filename), &gorm.Config{})
+	lg := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold:             time.Second, // Slow SQL threshold
+			LogLevel:                  logger.Warn, // Log level
+			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
+			Colorful:                  false,       // Disable color
+		},
+	)
+
+	db, err := gorm.Open(sqlite.Open(filename), &gorm.Config{
+		Logger: lg,
+	})
 	if err != nil {
 		panic("failed to connect database")
 	}
