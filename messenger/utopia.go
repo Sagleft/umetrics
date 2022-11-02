@@ -10,6 +10,7 @@ import (
 
 const (
 	maxGetChannelsTasks        = 5
+	maxGetChannelDataTasks     = 5
 	maxJoinChannelTasks        = 5  // per second
 	maxGetChannelContactsTasks = 10 // per second
 )
@@ -23,6 +24,7 @@ type rateLimiters struct {
 	GetChannels        *rate.RateLimiter
 	JoinChannel        *rate.RateLimiter
 	GetChannelContacts *rate.RateLimiter
+	GetChannelData     *rate.RateLimiter
 }
 
 func NewUtopiaMessenger(clientData utopiago.UtopiaClient) Messenger {
@@ -32,6 +34,7 @@ func NewUtopiaMessenger(clientData utopiago.UtopiaClient) Messenger {
 			GetChannels:        rate.New(maxGetChannelsTasks, time.Second),
 			JoinChannel:        rate.New(maxJoinChannelTasks, time.Second),
 			GetChannelContacts: rate.New(maxGetChannelContactsTasks, time.Second),
+			GetChannelData:     rate.New(maxGetChannelDataTasks, time.Second),
 		},
 	}
 }
@@ -106,4 +109,10 @@ func (u *utopia) ToogleChannelNotifications(channelID string, enabled bool) erro
 
 func (u *utopia) GetOwnContact() (utopiago.OwnContactData, error) {
 	return u.client.GetOwnContact()
+}
+
+func (u *utopia) GetChannelData(channelID string) (utopiago.ChannelData, error) {
+	u.limiters.GetChannelData.Wait()
+
+	return u.client.GetChannelInfo(channelID)
 }

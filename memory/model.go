@@ -7,7 +7,7 @@ import (
 )
 
 var models = []interface{}{
-	&User{}, &Channel{}, &ChannelMetrics{},
+	&User{}, &Channel{},
 }
 
 type User struct {
@@ -33,6 +33,9 @@ type Channel struct {
 	IsPrivate       bool      `gorm:"type:bool;default:false;column:is_private"`
 	CreatedOn       time.Time `gorm:"column:created_on"`
 	LastOnline      int       `gorm:"column:last_online;default:0"`
+	GeoTag          UGeoTag   `gorm:"column:geotag;default:''"`
+	ReadOnly        bool      `gorm:"column:readonly;default:false"`
+	ReadOnlyPrivacy bool      `gorm:"column:readonly_privacy;default:false"`
 }
 
 func (Channel) TableName() string {
@@ -48,15 +51,4 @@ type ChannelContact struct {
 
 func (ChannelContact) TableName() string {
 	return "channel_contacts"
-}
-
-type ChannelMetrics struct {
-	gorm.Model
-
-	ChannelID   string `gorm:"type:varchar(32);column:channel_id" json:"channel_id"`
-	OnlineCount int    `gorm:"column:online_count" json:"online_count"`
-}
-
-func (ChannelMetrics) TableName() string {
-	return "channel_metrics"
 }

@@ -35,6 +35,7 @@ func NewLocalDB(filename string) (Memory, error) {
 	}
 
 	// Migrate the schema
+	fmt.Println("migrate..")
 	for _, prefab := range models {
 		if err := db.AutoMigrate(prefab); err != nil {
 			return nil, fmt.Errorf("failed to migrate: %w", err)

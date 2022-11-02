@@ -64,13 +64,22 @@ func (b *bot) handleCheckStatsTask(event interface{}) {
 		return
 	}
 
+	// get channel online
 	contacts, err := b.Messenger.GetChannelContacts(e.Channel.ID)
 	if err != nil {
 		color.Red(err.Error())
 		return
 	}
-
 	e.Channel.LastOnline = len(contacts)
+
+	channelData, err := b.Messenger.GetChannelData(e.Channel.ID)
+	if err != nil {
+		color.Red(err.Error())
+		return
+	}
+	e.Channel.GeoTag = memory.UGeoTag(channelData.GeoTag)
+	e.Channel.ReadOnly = channelData.ReadOnly
+	e.Channel.ReadOnlyPrivacy = channelData.ReadOnlyPrivacy
 
 	if err := b.Memory.SaveChannel(e.Channel); err != nil {
 		color.Red(err.Error())
