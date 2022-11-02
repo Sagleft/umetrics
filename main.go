@@ -21,8 +21,8 @@ const (
 	checkChannelsInStart        = false
 	checkContactsInStart        = true
 	queueDefaultMaxCapacity     = 1000
-	limitMaxJoinChannelTasks    = 3 * time.Second // per second
-	limitMaxCheckChannelTasks   = 3 * time.Second // per second
+	limitMaxJoinChannelTasks    = 3  // per second
+	limitMaxCheckChannelTasks   = 30 // per second
 )
 
 type bot struct {
@@ -68,11 +68,11 @@ func (b *bot) run() error {
 	b.Workers = queueWorkers{
 		JoinChannel: queueWorker{
 			W:       swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity).SetAsync(false),
-			Limiter: rate.New(1, limitMaxJoinChannelTasks),
+			Limiter: rate.New(limitMaxJoinChannelTasks, time.Second),
 		},
 		CheckChannelContact: queueWorker{
 			W:       swissknife.NewChannelWorker(b.checkChannelContact, queueDefaultMaxCapacity).SetAsync(false),
-			Limiter: rate.New(1, limitMaxCheckChannelTasks),
+			Limiter: rate.New(limitMaxCheckChannelTasks, time.Second),
 		},
 	}
 	go b.Workers.JoinChannel.W.Start()
