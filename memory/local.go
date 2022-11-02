@@ -13,10 +13,6 @@ type localDB struct {
 }
 
 func NewLocalDB(filename string) (Memory, error) {
-	/*if !swissknife.IsFileExists(filename) {
-		return nil, fmt.Errorf("db file not found: %q", filename)
-	}*/
-
 	db, err := gorm.Open(sqlite.Open(filename), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
@@ -46,12 +42,21 @@ func (db *localDB) isEntryExists(entryPointer interface{}) (bool, error) {
 }
 
 func (db *localDB) IsChannelExists(channelID string) (bool, error) {
-	channelEntry := Channel{
+	return db.isEntryExists(&Channel{
 		ID: channelID,
-	}
-	return db.isEntryExists(&channelEntry)
+	})
 }
 
 func (db *localDB) SaveChannel(c Channel) error {
 	return db.conn.Save(&c).Error
+}
+
+func (db *localDB) IsUserExists(userPubkeyHash string) (bool, error) {
+	return db.isEntryExists(&User{
+		PubkeyHash: userPubkeyHash,
+	})
+}
+
+func (db *localDB) SaveUser(u User) error {
+	return db.conn.Save(&u).Error
 }

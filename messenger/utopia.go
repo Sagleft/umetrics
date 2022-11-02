@@ -1,8 +1,6 @@
 package messenger
 
 import (
-	"time"
-
 	"bot/memory"
 
 	utopiago "github.com/Sagleft/utopialib-go"
@@ -16,21 +14,6 @@ func NewUtopiaMessenger(clientData utopiago.UtopiaClient) Messenger {
 
 type utopia struct {
 	client *utopiago.UtopiaClient
-}
-
-func (u *utopia) GetStats(channelID string) (ChannelData, error) {
-	channelContacts, err := u.client.GetChannelContacts(channelID)
-	if err != nil {
-		return ChannelData{}, err
-	}
-
-	return ChannelData{
-		OnlineCount: len(channelContacts),
-	}, nil
-}
-
-func parseTime(timeStr string) (time.Time, error) {
-	return time.Parse(time.RFC3339, timeStr)
 }
 
 func (u *utopia) GetChannels() ([]memory.Channel, error) {
@@ -57,6 +40,10 @@ func (u *utopia) GetChannels() ([]memory.Channel, error) {
 	}
 
 	return r, nil
+}
+
+func (u *utopia) GetChannelContacts(channelID string) ([]utopiago.ChannelContactData, error) {
+	return u.client.GetChannelContacts(channelID)
 }
 
 func (u *utopia) JoinChannel(channelID, password string) error {

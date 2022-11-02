@@ -13,31 +13,14 @@ var models = []interface{}{
 type User struct {
 	gorm.Model
 
-	PubkeyHash  string `gorm:"type:varchar(32);column:pubkey_hash;unique_index" json:"pubkey_hash"`
-	Nickname    string `gorm:"type:varchar(48);default:'anonymous';column:nickname" json:"nickname"`
-	IsModerator bool   `gorm:"type:bool;default:false;column:is_moderator" json:"is_moderator"`
+	PubkeyHash string `gorm:"type:varchar(32);column:pubkey_hash;unique_index" json:"pubkey_hash"`
+	Nickname   string `gorm:"type:varchar(48);default:'anonymous';column:nickname" json:"nickname"`
 }
 
 func (User) TableName() string {
 	return "users"
 }
 
-/*
-original data:
-	AvatarID    string `json:"avatarId"`    // example: defAvatar_F10383EA72AC6263C21F356CD8D2E2A2
-	ChannelID   string `json:"channelid"`   // F10383EA72AC6263C21F356CD8D2E2A2
-	CreatedOn   string `json:"created"`     // 2022-01-28T16:11:39.144Z
-	Description string `json:"description"` // can be empty
-	IsJoined    bool   `json:"isjoined"`    // false
-	IsPrivate   bool   `json:"isprivate"`   // true
-	EditedOn    string `json:"modified"`    // 2022-01-28T16:11:39.145Z
-	Name        string `json:"name"`        // Monica
-	OwnerPubkey string `json:"owner"`       // 1B742E8D8DAE682ADD2568BE25B23F35BA7A8BFC1D5D3BCA0EE219A754A48201
-
-RFC3339     = "2006-01-02T15:04:05Z07:00"
-RFC3339Nano = "2006-01-02T15:04:05.999999999Z07:00"
-
-*/
 type Channel struct {
 	gorm.Model
 
@@ -52,4 +35,15 @@ type Channel struct {
 
 func (Channel) TableName() string {
 	return "channels"
+}
+
+type ChannelContact struct {
+	gorm.Model
+
+	UserPubkeyHash string `gorm:"type:varchar(32);column:contact_pubkey_hash" json:"contact_pubkey_hash"`
+	IsModerator    bool   `gorm:"type:bool;default:false;column:is_moderator" json:"is_moderator"`
+}
+
+func (ChannelContact) TableName() string {
+	return "channel_contacts"
 }
