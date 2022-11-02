@@ -72,6 +72,10 @@ func (b *bot) checkChannelContact(event interface{}) {
 		return
 	}
 
+	if len(contacts) == 0 {
+		return
+	}
+
 	usersSaved := 0
 	for _, contact := range contacts {
 		if err := b.saveUserIfNotExists(memory.User{
