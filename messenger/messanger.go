@@ -7,8 +7,8 @@ import (
 )
 
 type Messenger interface {
-	GetChannels(channelID string) ([]memory.Channel, error)
-	GetChannelContacts() ([]utopiago.ChannelContactData, error)
+	GetChannels() ([]memory.Channel, error)
+	GetChannelContacts(channelID string) ([]utopiago.ChannelContactData, error)
 	JoinChannel(channelID, password string) error
 	GetJoinedChannels() (map[string]struct{}, error)
 	ToogleChannelNotifications(channelID string, enabled bool) error
