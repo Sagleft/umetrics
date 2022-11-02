@@ -85,11 +85,12 @@ func (b *bot) checkChannelContact(event interface{}) {
 		return
 	}
 
-	fmt.Printf("%v online", len(contacts))
-	fmt.Println()
 	if len(contacts) == 0 {
 		return
 	}
+
+	fmt.Printf("%v online", len(contacts))
+	fmt.Println()
 
 	for _, contact := range contacts {
 		if contact.PubkeyHash == b.BotPubkeyHash {
