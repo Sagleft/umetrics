@@ -9,7 +9,7 @@ import (
 )
 
 func TestUserExists(t *testing.T) {
-	db, err := NewLocalDB("../memory.db")
+	db, err := NewLocalDB("test.db")
 	require.Nil(t, err)
 
 	userPubkeyHash := "BAEB92BC6E8144F2D15E977A878ABFAC"
@@ -24,4 +24,8 @@ func TestUserExists(t *testing.T) {
 	isExists, err := db.IsUserExists(userPubkeyHash)
 	require.Nil(t, err)
 	assert.Equal(t, true, isExists)
+
+	isExists, err = db.IsUserExists("test")
+	require.Nil(t, err)
+	assert.Equal(t, false, isExists)
 }
