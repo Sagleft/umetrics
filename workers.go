@@ -59,8 +59,7 @@ func (b *bot) saveUserIfNotExists(u memory.User) error {
 		return err
 	}
 
-	log.Printf("new user saved: %s", u.Nickname)
-	fmt.Println()
+	color.Green("new user saved: %s", u.Nickname)
 	return nil
 }
 
@@ -96,9 +95,6 @@ func (b *bot) checkChannelContact(event interface{}) {
 		if contact.PubkeyHash == b.BotPubkeyHash {
 			continue
 		}
-
-		fmt.Printf("check user %s..", contact.Nick)
-		fmt.Println()
 
 		if err := b.saveUserIfNotExists(memory.User{
 			PubkeyHash: contact.PubkeyHash,
