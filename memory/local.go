@@ -79,6 +79,6 @@ func (db *localDB) SaveUser(u User) error {
 
 func (db *localDB) GetChannels() ([]Channel, error) {
 	channels := []Channel{}
-	result := db.conn.Find(&channels)
+	result := db.conn.Order("last_online desc").Find(&channels)
 	return channels, result.Error
 }
