@@ -71,8 +71,6 @@ func (b *bot) checkChannelContact(event interface{}) {
 	defer b.Handlers.ChannelContacts.markProcessing(false)
 
 	e := event.(checkChannelTask)
-	fmt.Printf("check channel %s.. ", e.Channel.Title)
-
 	if err := b.Messenger.JoinChannel(e.Channel.ID, ""); err != nil {
 		color.Red("failed to join to %s: %w", e.Channel.ID, err)
 		return
@@ -89,7 +87,7 @@ func (b *bot) checkChannelContact(event interface{}) {
 		return
 	}
 
-	fmt.Printf("%v online", len(contacts))
+	fmt.Printf("check channel %s.. %v online", e.Channel.Title, len(contacts))
 	fmt.Println()
 
 	for _, contact := range contacts {
