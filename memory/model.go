@@ -13,8 +13,9 @@ var models = []interface{}{
 type User struct {
 	gorm.Model
 
-	PubkeyHash string `gorm:"type:varchar(32);column:pubkey_hash;unique_index" json:"pubkey_hash"`
-	Nickname   string `gorm:"type:varchar(48);default:'anonymous';column:nickname" json:"nickname"`
+	PubkeyHash string    `gorm:"type:varchar(32);column:pubkey_hash;unique_index" json:"pubkey_hash"`
+	Nickname   string    `gorm:"type:varchar(48);default:'anonymous';column:nickname" json:"nickname"`
+	LastSeen   time.Time `gorm:"column:last_seen" json:"last_seen"`
 }
 
 func (User) TableName() string {

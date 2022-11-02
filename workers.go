@@ -3,6 +3,7 @@ package main
 import (
 	"bot/memory"
 	"log"
+	"time"
 
 	swissknife "github.com/Sagleft/swiss-knife"
 	"github.com/beefsack/go-rate"
@@ -64,6 +65,7 @@ func (b *bot) checkChannelContact(event interface{}) {
 	e := event.(checkChannelTask)
 	log.Println("check channel " + e.Title + "..")
 
+	queryTimestamp := time.Now()
 	contacts, err := b.Messenger.GetChannelContacts(e.ID)
 	if err != nil {
 		log.Println(err)
@@ -74,6 +76,7 @@ func (b *bot) checkChannelContact(event interface{}) {
 		if err := b.saveUserIfNotExists(memory.User{
 			PubkeyHash: contact.PubkeyHash,
 			Nickname:   contact.Nick,
+			LastSeen:   queryTimestamp,
 		}); err != nil {
 			log.Println(err)
 			return
