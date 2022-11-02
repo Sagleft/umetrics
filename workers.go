@@ -72,6 +72,7 @@ func (b *bot) checkChannelContact(event interface{}) {
 		return
 	}
 
+	usersSaved := 0
 	for _, contact := range contacts {
 		if err := b.saveUserIfNotExists(memory.User{
 			PubkeyHash: contact.PubkeyHash,
@@ -81,5 +82,11 @@ func (b *bot) checkChannelContact(event interface{}) {
 			log.Println(err)
 			return
 		}
+
+		usersSaved++
+	}
+
+	if usersSaved > 0 {
+		log.Printf("new users saved: %v", usersSaved)
 	}
 }
