@@ -93,6 +93,10 @@ func (b *bot) checkChannelContact(event interface{}) {
 	}
 
 	for _, contact := range contacts {
+		if contact.PubkeyHash == b.BotPubkeyHash {
+			continue
+		}
+
 		fmt.Printf("check user %s..", contact.Nick)
 		fmt.Println()
 

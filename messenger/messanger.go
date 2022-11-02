@@ -12,4 +12,5 @@ type Messenger interface {
 	JoinChannel(channelID, password string) error
 	GetJoinedChannels() (map[string]struct{}, error)
 	ToogleChannelNotifications(channelID string, enabled bool) error
+	GetOwnContact() (utopiago.OwnContactData, error)
 }

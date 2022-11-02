@@ -100,3 +100,7 @@ func (u *utopia) GetJoinedChannels() (map[string]struct{}, error) {
 func (u *utopia) ToogleChannelNotifications(channelID string, enabled bool) error {
 	return u.client.ToogleChannelNotifications(channelID, enabled)
 }
+
+func (u *utopia) GetOwnContact() (utopiago.OwnContactData, error) {
+	return u.client.GetOwnContact()
+}

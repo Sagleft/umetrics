@@ -23,10 +23,11 @@ const (
 )
 
 type bot struct {
-	Memory    memory.Memory
-	Messenger messenger.Messenger
-	Handlers  botCrons
-	Workers   queueWorkers
+	Memory        memory.Memory
+	Messenger     messenger.Messenger
+	Handlers      botCrons
+	Workers       queueWorkers
+	BotPubkeyHash string
 }
 
 func main() {
@@ -45,6 +46,10 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	if err := b.loadOwnContact(); err != nil {
+		log.Fatalln(err)
+	}
+
 	if b.run(); err != nil {
 		log.Fatalln(err)
 	}
@@ -58,6 +63,16 @@ func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
 		Memory:    db,
 		Messenger: messenger.NewUtopiaMessenger(cfg.Utopia),
 	}, nil
+}
+
+func (b *bot) loadOwnContact() error {
+	ownContact, err := b.Messenger.GetOwnContact()
+	if err != nil {
+		return err
+	}
+
+	b.BotPubkeyHash = ownContact.PubkeyHash
+	return nil
 }
 
 func (b *bot) run() error {
