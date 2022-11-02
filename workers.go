@@ -7,18 +7,12 @@ import (
 	"time"
 
 	swissknife "github.com/Sagleft/swiss-knife"
-	"github.com/beefsack/go-rate"
 	"github.com/fatih/color"
 )
 
-type queueWorker struct {
-	W       *swissknife.ChannelWorker
-	Limiter *rate.RateLimiter
-}
-
 type queueWorkers struct {
-	JoinChannel         queueWorker
-	CheckChannelContact queueWorker
+	JoinChannel         *swissknife.ChannelWorker
+	CheckChannelContact *swissknife.ChannelWorker
 }
 
 type joinChannelTask struct {

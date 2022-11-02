@@ -10,7 +10,6 @@ import (
 	"bot/messenger"
 
 	swissknife "github.com/Sagleft/swiss-knife"
-	"github.com/beefsack/go-rate"
 )
 
 const (
@@ -21,8 +20,6 @@ const (
 	checkChannelsInStart        = false
 	checkContactsInStart        = true
 	queueDefaultMaxCapacity     = 1000
-	limitMaxJoinChannelTasks    = 10 // per second
-	limitMaxCheckChannelTasks   = 30 // per second
 )
 
 type bot struct {
@@ -65,18 +62,15 @@ func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
 
 func (b *bot) run() error {
 	// setup queues
-	b.Workers = queueWorkers{
-		JoinChannel: queueWorker{
-			W:       swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity).SetAsync(false),
-			Limiter: rate.New(limitMaxJoinChannelTasks, time.Second),
-		},
-		CheckChannelContact: queueWorker{
-			W:       swissknife.NewChannelWorker(b.checkChannelContact, queueDefaultMaxCapacity).SetAsync(false),
-			Limiter: rate.New(limitMaxCheckChannelTasks, time.Second),
-		},
+	go swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity).SetAsync(false).Start()
+	go swissknife.NewChannelWorker(b.checkChannelContact, queueDefaultMaxCapacity).SetAsync(false)
+
+	/*b.Workers = queueWorkers{
+		JoinChannel:         swissknife.NewChannelWorker(b.handleJoinChannelTask, queueDefaultMaxCapacity).SetAsync(false),
+		CheckChannelContact: swissknife.NewChannelWorker(b.checkChannelContact, queueDefaultMaxCapacity).SetAsync(false),
 	}
-	go b.Workers.JoinChannel.W.Start()
-	go b.Workers.CheckChannelContact.W.Start()
+	go b.Workers.JoinChannel.Start()
+	go b.Workers.CheckChannelContact.Start()*/
 
 	// setup cron
 	b.Handlers = botCrons{

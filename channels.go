@@ -49,5 +49,5 @@ func (b *bot) checkChannels() {
 }
 
 func (b *bot) addJoinChannelTask(task joinChannelTask) {
-	b.Workers.JoinChannel.W.AddEvent(task)
+	b.Workers.JoinChannel.AddEvent(task)
 }

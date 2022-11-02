@@ -10,7 +10,7 @@ func (b *bot) checkUsers() {
 	}
 
 	for _, channel := range channels {
-		b.Workers.CheckChannelContact.W.AddEvent(checkChannelTask{
+		b.Workers.CheckChannelContact.AddEvent(checkChannelTask{
 			Channel: channel,
 		})
 	}
