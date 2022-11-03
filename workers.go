@@ -59,6 +59,7 @@ func (b *bot) saveUserRelation(channel memory.Channel, contact utopiago.ChannelC
 	}
 
 	if err := b.Memory.SaveRelation(memory.ChannelUserRelation{
+		ChannelID:      channel.ID,
 		UserPubkeyHash: contact.PubkeyHash,
 		IsModerator:    contact.IsModerator,
 	}); err != nil {
@@ -124,7 +125,7 @@ func (b *bot) processChannelContacts(
 	contacts []utopiago.ChannelContactData,
 ) error {
 	queryTimestamp := time.Now()
-	fmt.Printf("check channel %s.. %v online", channel.Title, len(contacts))
+	fmt.Printf("check channel %s (%s).. %v online", channel.Title, channel.ID, len(contacts))
 	fmt.Println()
 
 	for _, contact := range contacts {
