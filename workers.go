@@ -19,7 +19,9 @@ type checkChannelTask struct {
 }
 
 func (b *bot) saveUser(u memory.User) error {
-	isUserKnown, err := b.Memory.IsUserExists(u.PubkeyHash)
+	isUserKnown, err := b.Memory.IsUserExists(memory.User{
+		PubkeyHash: u.PubkeyHash,
+	})
 	if err != nil {
 		return err
 	}
@@ -45,6 +47,28 @@ func (b *bot) saveChannelIFNotExists(channel memory.Channel) error {
 
 	color.Green("save new channel: %s", channel.Title)
 	return b.Memory.SaveChannel(channel)
+}
+
+func (b *bot) saveUserRelation(channel memory.Channel, contact utopiago.ChannelContactData) error {
+	isExists, err := b.Memory.IsRelationExists(memory.ChannelUserRelation{
+		ChannelID:      channel.ID,
+		UserPubkeyHash: contact.PubkeyHash,
+	})
+	if err != nil {
+		return err
+	}
+
+	if err := b.Memory.SaveRelation(memory.ChannelUserRelation{
+		UserPubkeyHash: contact.PubkeyHash,
+		IsModerator:    contact.IsModerator,
+	}); err != nil {
+		return err
+	}
+
+	if !isExists {
+		color.Green("new relation saved: %s is a member of %q", contact.Nick, channel.Title)
+	}
+	return nil
 }
 
 func (b *bot) handleCheckStatsTask(event interface{}) {
@@ -113,6 +137,10 @@ func (b *bot) processChannelContacts(
 			Nickname:   contact.Nick,
 			LastSeen:   queryTimestamp,
 		}); err != nil {
+			return err
+		}
+
+		if err := b.saveUserRelation(channel, contact); err != nil {
 			return err
 		}
 	}

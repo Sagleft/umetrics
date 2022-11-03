@@ -7,7 +7,7 @@ import (
 )
 
 var models = []interface{}{
-	&User{}, &Channel{},
+	&User{}, &Channel{}, &ChannelUserRelation{},
 }
 
 type User struct {
@@ -42,13 +42,14 @@ func (Channel) TableName() string {
 	return "channels"
 }
 
-type ChannelContact struct {
+type ChannelUserRelation struct {
 	gorm.Model
 
+	ChannelID      string `gorm:"column:channel_id"`
 	UserPubkeyHash string `gorm:"type:varchar(32);column:contact_pubkey_hash" json:"contact_pubkey_hash"`
 	IsModerator    bool   `gorm:"type:bool;default:false;column:is_moderator" json:"is_moderator"`
 }
 
-func (ChannelContact) TableName() string {
+func (ChannelUserRelation) TableName() string {
 	return "channel_contacts"
 }

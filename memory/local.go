@@ -68,10 +68,8 @@ func (db *localDB) SaveChannel(c Channel) error {
 	return db.conn.Save(&c).Error
 }
 
-func (db *localDB) IsUserExists(userPubkeyHash string) (bool, error) {
-	return db.isEntryExists(&User{
-		PubkeyHash: userPubkeyHash,
-	}, &User{})
+func (db *localDB) IsUserExists(u User) (bool, error) {
+	return db.isEntryExists(&u, &User{})
 }
 
 func (db *localDB) SaveUser(u User) error {
@@ -82,4 +80,12 @@ func (db *localDB) GetChannels() ([]Channel, error) {
 	channels := []Channel{}
 	result := db.conn.Order("last_online desc").Find(&channels)
 	return channels, result.Error
+}
+
+func (db *localDB) SaveRelation(c ChannelUserRelation) error {
+	return db.conn.Save(&c).Error
+}
+
+func (db *localDB) IsRelationExists(r ChannelUserRelation) (bool, error) {
+	return db.isEntryExists(&r, &ChannelUserRelation{})
 }
