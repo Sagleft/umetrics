@@ -12,4 +12,5 @@ type Memory interface {
 	IsRelationExists(ChannelUserRelation) (bool, error)
 	SaveRelation(ChannelUserRelation) error
 	GetRelations() ([]ChannelUserRelation, error)
+	DeleteRelation(ChannelUserRelation) error
 }

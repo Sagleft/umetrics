@@ -96,3 +96,8 @@ func (db *localDB) GetRelations() ([]ChannelUserRelation, error) {
 	result := db.conn.Find(&relations)
 	return relations, result.Error
 }
+
+func (db *localDB) DeleteRelation(r ChannelUserRelation) error {
+	result := db.conn.Delete(&r)
+	return result.Error
+}

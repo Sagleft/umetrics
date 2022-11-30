@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bot/pkg/memory"
 	"log"
 	"time"
 
@@ -18,8 +19,9 @@ func (c *cronContainer) markProcessing(isProcessing bool) {
 }
 
 type botCrons struct {
-	ChannelContacts *cronContainer
-	FindChannels    *cronContainer
+	ChannelContacts    *cronContainer
+	FindChannels       *cronContainer
+	RemoveOldRelations *cronContainer
 }
 
 func setupCronHandler(callback func(), timeout time.Duration, startImmediate bool) *cronContainer {
@@ -47,14 +49,34 @@ func (b *bot) checkStats() {
 func (b *bot) findChannels() {
 	channels, err := b.Messenger.GetChannels()
 	if err != nil {
-		color.Red("get channels: %w", err)
+		color.Red("get channels: %s", err.Error())
 		return
 	}
 
 	for _, channel := range channels {
 		if err := b.saveChannelIFNotExists(channel); err != nil {
-			color.Red("save channel: %w", err)
+			color.Red("save channel: %s", err.Error())
 			return
+		}
+	}
+}
+
+func (b *bot) removeOldRelations() {
+	relations, err := b.Memory.GetRelations()
+	if err != nil {
+		color.Red("get relations: %s", err.Error())
+		return
+	}
+
+	for _, rel := range relations {
+		if time.Since(rel.LastSeen) > maxRelationDuration {
+			if err := b.Memory.DeleteRelation(memory.ChannelUserRelation{
+				ChannelID:      rel.ChannelID,
+				UserPubkeyHash: rel.UserPubkeyHash,
+			}); err != nil {
+				color.Red("delete relation: %s", err.Error())
+				return
+			}
 		}
 	}
 }
