@@ -34,26 +34,29 @@ func (f *ginFront) setupRoutes() error {
 	f.loadTemplates("./templates/*")
 	f.Gin.Static("/assets", "./assets")
 
-	f.Gin.GET("/", func(c *gin.Context) {
-		f.renderTemplate(
-			c,
-			http.StatusOK,
-			"home.html",
-			gin.H{},
-		)
-	})
-	f.Gin.NoRoute(func(c *gin.Context) {
-		f.renderTemplate(
-			c,
-			http.StatusNotFound,
-			"404.html",
-			gin.H{},
-		)
-	})
-
+	f.Gin.GET("/", f.renderHomePage)
+	f.Gin.NoRoute(f.renderNotFoundPage)
 	return nil
 }
 
 func (f *ginFront) renderTemplate(c *gin.Context, code int, name string, obj interface{}) {
 	c.HTML(code, name, obj)
+}
+
+func (f *ginFront) renderNotFoundPage(c *gin.Context) {
+	f.renderTemplate(
+		c,
+		http.StatusNotFound,
+		"404.html",
+		gin.H{},
+	)
+}
+
+func (f *ginFront) renderHomePage(c *gin.Context) {
+	f.renderTemplate(
+		c,
+		http.StatusOK,
+		"home.html",
+		gin.H{},
+	)
 }
