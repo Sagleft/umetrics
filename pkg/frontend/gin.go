@@ -1,18 +1,21 @@
 package frontend
 
 import (
+	"bot/pkg/memory"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type ginFront struct {
-	Gin *gin.Engine
+	Gin    *gin.Engine
+	Memory memory.Memory
 }
 
-func NewGINFrontend() (Frontend, error) {
+func NewGINFrontend(db memory.Memory) (Frontend, error) {
 	f := &ginFront{
-		Gin: gin.Default(),
+		Gin:    gin.Default(),
+		Memory: db,
 	}
 	f.setupRoutes()
 

@@ -61,7 +61,7 @@ func main() {
 
 	fmt.Println("setup frontend..")
 
-	b.Frontend, err = frontend.NewGINFrontend()
+	b.Frontend, err = frontend.NewGINFrontend(db)
 	if err != nil {
 		log.Fatalln(err)
 	}
