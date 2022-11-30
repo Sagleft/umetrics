@@ -45,10 +45,26 @@ func (u *utopia) GetChannels() ([]memory.Channel, error) {
 	channels, err := u.client.GetChannels(utopiago.GetChannelsTask{
 		SortBy: utopiago.SortChannelsByModified,
 	})
-	if err != nil {
+	if err == nil {
+		return convertChannelsData(channels)
+	}
+
+	if !utopiago.CheckErrorConnBroken(err) {
 		return nil, err
 	}
 
+	reconnect(func() error {
+		channels, err = u.client.GetChannels(utopiago.GetChannelsTask{
+			SortBy: utopiago.SortChannelsByModified,
+		})
+		return err
+	})
+
+	return convertChannelsData(channels)
+}
+
+func convertChannelsData(channels []utopiago.SearchChannelData) ([]memory.Channel, error) {
+	var err error
 	r := make([]memory.Channel, len(channels))
 	for i := len(channels) - 1; i >= 0; i-- {
 		data := channels[i]
@@ -73,19 +89,39 @@ func (u *utopia) GetChannels() ([]memory.Channel, error) {
 func (u *utopia) GetChannelContacts(channelID string) ([]utopiago.ChannelContactData, error) {
 	u.limiters.GetChannelContacts.Wait()
 
-	return u.client.GetChannelContacts(channelID)
+	contacts, err := u.client.GetChannelContacts(channelID)
+	if err == nil {
+		return contacts, nil
+	}
+
+	if !utopiago.CheckErrorConnBroken(err) {
+		return nil, err
+	}
+
+	reconnect(func() error {
+		contacts, err = u.client.GetChannelContacts(channelID)
+		return err
+	})
+	return contacts, nil
 }
 
 func (u *utopia) JoinChannel(channelID, password string) error {
 	u.limiters.JoinChannel.Wait()
 
-	var err error
-	if password == "" {
-		_, err = u.client.JoinChannel(channelID)
-	} else {
-		_, err = u.client.JoinChannel(channelID, password)
+	_, err := u.client.JoinChannel(channelID, password)
+	if err == nil {
+		return nil
 	}
-	return err
+
+	if !utopiago.CheckErrorConnBroken(err) {
+		return err
+	}
+
+	reconnect(func() error {
+		_, err := u.client.JoinChannel(channelID, password)
+		return err
+	})
+	return nil
 }
 
 func (u *utopia) GetJoinedChannels() (map[string]struct{}, error) {
@@ -93,26 +129,78 @@ func (u *utopia) GetJoinedChannels() (map[string]struct{}, error) {
 		ChannelType: utopiago.ChannelTypeJoined,
 	})
 	if err != nil {
-		return nil, err
+		if !utopiago.CheckErrorConnBroken(err) {
+			return nil, err
+		}
+
+		reconnect(func() error {
+			channels, err = u.client.GetChannels(utopiago.GetChannelsTask{
+				ChannelType: utopiago.ChannelTypeJoined,
+			})
+			return err
+		})
+		return convertChannelIDs(channels), nil
 	}
 
+	return convertChannelIDs(channels), nil
+}
+
+func convertChannelIDs(channels []utopiago.SearchChannelData) map[string]struct{} {
 	channelIDs := make(map[string]struct{})
 	for _, data := range channels {
 		channelIDs[data.ChannelID] = struct{}{}
 	}
-	return channelIDs, nil
+	return channelIDs
 }
 
 func (u *utopia) ToogleChannelNotifications(channelID string, enabled bool) error {
-	return u.client.ToogleChannelNotifications(channelID, enabled)
+	err := u.client.ToogleChannelNotifications(channelID, enabled)
+	if err == nil {
+		return nil
+	}
+
+	if !utopiago.CheckErrorConnBroken(err) {
+		return err
+	}
+
+	reconnect(func() error {
+		return u.client.ToogleChannelNotifications(channelID, enabled)
+	})
+	return nil
 }
 
 func (u *utopia) GetOwnContact() (utopiago.OwnContactData, error) {
-	return u.client.GetOwnContact()
+	data, err := u.client.GetOwnContact()
+	if err != nil {
+		if !utopiago.CheckErrorConnBroken(err) {
+			return utopiago.OwnContactData{}, err
+		}
+
+		reconnect(func() error {
+			data, err = u.client.GetOwnContact()
+			return err
+		})
+		return data, nil
+	}
+
+	return data, nil
 }
 
 func (u *utopia) GetChannelData(channelID string) (utopiago.ChannelData, error) {
 	u.limiters.GetChannelData.Wait()
 
-	return u.client.GetChannelInfo(channelID)
+	data, err := u.client.GetChannelInfo(channelID)
+	if err != nil {
+		if !utopiago.CheckErrorConnBroken(err) {
+			return utopiago.ChannelData{}, err
+		}
+
+		reconnect(func() error {
+			data, err = u.client.GetChannelInfo(channelID)
+			return err
+		})
+		return data, nil
+	}
+
+	return data, nil
 }
