@@ -41,21 +41,26 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	fmt.Println("create bot..")
 	b, err := newBot(cfg, db)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
+	fmt.Println("load account data..")
 	if err := b.loadOwnContact(); err != nil {
 		log.Fatalln(err)
 	}
 
+	fmt.Println("start..")
 	if b.run(); err != nil {
 		log.Fatalln(err)
 	}
 
-	fmt.Println("Bot started")
-	swissknife.RunInBackground()
+	fmt.Println("setup frontend..")
+	if b.setupFrontend(); err != nil {
+		log.Fatalln(err)
+	}
 }
 
 func newBot(cfg config.Config, db memory.Memory) (*bot, error) {

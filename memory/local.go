@@ -17,6 +17,7 @@ type localDB struct {
 }
 
 func NewLocalDB(filename string) (Memory, error) {
+	fmt.Println("connect to db..")
 	lg := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
