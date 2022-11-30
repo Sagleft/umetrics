@@ -45,9 +45,10 @@ func (Channel) TableName() string {
 type ChannelUserRelation struct {
 	gorm.Model
 
-	ChannelID      string `gorm:"column:channel_id"`
-	UserPubkeyHash string `gorm:"type:varchar(32);column:contact_pubkey_hash" json:"contact_pubkey_hash"`
-	IsModerator    bool   `gorm:"type:bool;default:false;column:is_moderator" json:"is_moderator"`
+	ChannelID      string    `gorm:"column:channel_id"`
+	UserPubkeyHash string    `gorm:"type:varchar(32);column:contact_pubkey_hash" json:"contact_pubkey_hash"`
+	IsModerator    bool      `gorm:"type:bool;default:false;column:is_moderator" json:"is_moderator"`
+	LastSeen       time.Time `gorm:"column:last_seen" json:"last_seen"`
 }
 
 func (ChannelUserRelation) TableName() string {

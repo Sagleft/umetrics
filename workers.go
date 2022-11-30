@@ -62,6 +62,7 @@ func (b *bot) saveUserRelation(channel memory.Channel, contact utopiago.ChannelC
 		ChannelID:      channel.ID,
 		UserPubkeyHash: contact.PubkeyHash,
 		IsModerator:    contact.IsModerator,
+		LastSeen:       time.Now(),
 	}); err != nil {
 		return err
 	}
