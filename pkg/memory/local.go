@@ -90,3 +90,9 @@ func (db *localDB) SaveRelation(c ChannelUserRelation) error {
 func (db *localDB) IsRelationExists(r ChannelUserRelation) (bool, error) {
 	return db.isEntryExists(&r, &ChannelUserRelation{})
 }
+
+func (db *localDB) GetRelations() ([]ChannelUserRelation, error) {
+	relations := []ChannelUserRelation{}
+	result := db.conn.Find(&relations)
+	return relations, result.Error
+}

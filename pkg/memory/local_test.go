@@ -21,11 +21,11 @@ func TestUserExists(t *testing.T) {
 	})
 	require.Nil(t, err)
 
-	isExists, err := db.IsUserExists(userPubkeyHash)
+	isExists, err := db.IsUserExists(User{PubkeyHash: "test"})
 	require.Nil(t, err)
 	assert.Equal(t, true, isExists)
 
-	isExists, err = db.IsUserExists("test")
+	isExists, err = db.IsUserExists(User{PubkeyHash: "test"})
 	require.Nil(t, err)
 	assert.Equal(t, false, isExists)
 }
