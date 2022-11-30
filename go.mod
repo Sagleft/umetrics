@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/Sagleft/swiss-knife v1.2.0
 	github.com/Sagleft/utopialib-go v1.12.0
-	github.com/Sagleft/utopialib-go/v2 v2.0.2
+	github.com/Sagleft/utopialib-go/v2 v2.0.3
 	github.com/fatih/color v1.13.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/sagleft/simple-cron v1.4.1

@@ -14,5 +14,5 @@ type Messenger interface {
 	ToogleChannelNotifications(channelID string, enabled bool) error
 	GetOwnContact() (ustructs.OwnContactData, error)
 	GetChannelData(channelID string) (ustructs.ChannelData, error)
-	GetNetworkConnections(channelID string) ([]ustructs.PeerInfo, error)
+	GetNetworkConnections() ([]ustructs.PeerInfo, error)
 }

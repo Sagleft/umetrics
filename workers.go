@@ -5,7 +5,7 @@ import (
 	"time"
 
 	swissknife "github.com/Sagleft/swiss-knife"
-	utopiago "github.com/Sagleft/utopialib-go"
+	ustructs "github.com/Sagleft/utopialib-go/v2/pkg/structs"
 	"github.com/fatih/color"
 )
 
@@ -48,7 +48,7 @@ func (b *bot) saveChannelIFNotExists(channel memory.Channel) error {
 	return b.Memory.SaveChannel(channel)
 }
 
-func (b *bot) saveUserRelation(channel memory.Channel, contact utopiago.ChannelContactData) error {
+func (b *bot) saveUserRelation(channel memory.Channel, contact ustructs.ChannelContactData) error {
 	isExists, err := b.Memory.IsRelationExists(memory.ChannelUserRelation{
 		ChannelID:      channel.ID,
 		UserPubkeyHash: contact.PubkeyHash,
@@ -122,7 +122,7 @@ func (b *bot) handleCheckStatsTask(event interface{}) {
 
 func (b *bot) processChannelContacts(
 	channel memory.Channel,
-	contacts []utopiago.ChannelContactData,
+	contacts []ustructs.ChannelContactData,
 ) error {
 	queryTimestamp := time.Now()
 	//fmt.Printf("check channel %s (%s).. %v online", channel.Title, channel.ID, len(contacts))

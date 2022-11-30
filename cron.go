@@ -3,6 +3,7 @@ package main
 import (
 	"bot/pkg/memory"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
@@ -71,22 +72,74 @@ func (b *bot) removeOldRelations() {
 	}
 
 	for _, rel := range relations {
-		if time.Since(rel.LastSeen) > maxRelationDuration {
-			if err := b.Memory.DeleteRelation(memory.ChannelUserRelation{
-				ChannelID:      rel.ChannelID,
-				UserPubkeyHash: rel.UserPubkeyHash,
+		if time.Since(rel.LastSeen) < maxRelationDuration {
+			continue
+		}
+
+		if err := b.Memory.DeleteRelation(memory.ChannelUserRelation{
+			ChannelID:      rel.ChannelID,
+			UserPubkeyHash: rel.UserPubkeyHash,
+		}); err != nil {
+			color.Red("delete relation: %s", err.Error())
+			return
+		}
+	}
+}
+
+func (b *bot) findPeers() {
+	peers, err := b.Messenger.GetNetworkConnections()
+	if err != nil {
+		color.Red("get peers: %s", err.Error())
+		return
+	}
+
+	for _, peer := range peers {
+		if peer.Address == "" {
+			color.Yellow("empty peer address given")
+			return
+		}
+
+		peerAddress := strings.Split(peer.Address, ":")
+
+		isExists, err := b.Memory.IsPeerExists(memory.Peer{
+			IP: peerAddress[0],
+		})
+		if err != nil {
+			color.Red("check peer exists in db: %s", err.Error())
+			return
+		}
+
+		if !isExists {
+			if err := b.Memory.SavePeer(memory.Peer{
+				Direction: peer.Direction,
+				IP:        peerAddress[0],
+				Lat:       "", // TODO
+				Lon:       "", // TODO
 			}); err != nil {
-				color.Red("delete relation: %s", err.Error())
+				color.Red("save peer: %s", err.Error())
 				return
 			}
 		}
 	}
 }
 
-func (b *bot) findPeers() {
-
-}
-
 func (b *bot) removeOldPeers() {
+	peers, err := b.Memory.GetPeers()
+	if err != nil {
+		color.Red("get peers: %s", err.Error())
+		return
+	}
 
+	for _, peer := range peers {
+		if time.Since(peer.CreatedAt) < maxPeerDuration {
+			continue
+		}
+
+		if err := b.Memory.DeletePeer(memory.Peer{
+			IP: peer.IP,
+		}); err != nil {
+			color.Red("delete peer: %s", err.Error())
+			return
+		}
+	}
 }

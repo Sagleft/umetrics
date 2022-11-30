@@ -2,8 +2,8 @@ github.com/Sagleft/swiss-knife v1.2.0 h1:nzQpZiYn4FS/LX8S4SSrvE9quxMh3BlqsM/XLrO
 github.com/Sagleft/swiss-knife v1.2.0/go.mod h1:qPlA/Y53sIYAyJI+E3StPw3vNSy9rzxAeh03oemFM9g=
 github.com/Sagleft/utopialib-go v1.12.0 h1:EKI/h4zZJsF1FsQZ6Vj+LTHRKQZMTkfpStmXdLMN63Y=
 github.com/Sagleft/utopialib-go v1.12.0/go.mod h1:bf0e2+1gmAvuXjjQM3QeuexfonZEq8raGKHANP0EhgU=
-github.com/Sagleft/utopialib-go/v2 v2.0.2 h1:vFDvS2XnhUaejMlEuGFwe9S6NSNXrKkX7J7d3gnmdl8=
-github.com/Sagleft/utopialib-go/v2 v2.0.2/go.mod h1:pCjJqjTjvhcMBRvMHl2ZBDbvmavPWrtz92hTQqAt6sU=
+github.com/Sagleft/utopialib-go/v2 v2.0.3 h1:ysMOEQeDuTiRPZlioptVgF/30Uyas0OC48ZArnOn0Co=
+github.com/Sagleft/utopialib-go/v2 v2.0.3/go.mod h1:pCjJqjTjvhcMBRvMHl2ZBDbvmavPWrtz92hTQqAt6sU=
 github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0 h1:0b2vaepXIfMsG++IsjHiI2p4bxALD1Y2nQKGMR5zDQM=
 github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0/go.mod h1:6YNgTHLutezwnBvyneBbwvB8C82y3dcoOj5EQJIdGXA=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=

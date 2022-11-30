@@ -60,7 +60,6 @@ type Peer struct {
 
 	Direction int
 	IP        string
-	Port      int
 	Lat       string
 	Lon       string
 }

@@ -177,8 +177,8 @@ func (u *utopia) GetChannelData(channelID string) (ustructs.ChannelData, error) 
 	return data, nil
 }
 
-func (u *utopia) GetNetworkConnections(channelID string) ([]ustructs.PeerInfo, error) {
-	data, err := u.client.GetNetworkConnections(channelID)
+func (u *utopia) GetNetworkConnections() ([]ustructs.PeerInfo, error) {
+	data, err := u.client.GetNetworkConnections()
 	if err == nil {
 		return data, nil
 	}
@@ -188,7 +188,7 @@ func (u *utopia) GetNetworkConnections(channelID string) ([]ustructs.PeerInfo, e
 	}
 
 	reconnect(func() error {
-		data, err = u.client.GetNetworkConnections(channelID)
+		data, err = u.client.GetNetworkConnections()
 		return err
 	})
 	return data, nil
