@@ -2,7 +2,6 @@ package main
 
 import (
 	"bot/pkg/memory"
-	"fmt"
 	"time"
 
 	swissknife "github.com/Sagleft/swiss-knife"
@@ -126,8 +125,8 @@ func (b *bot) processChannelContacts(
 	contacts []utopiago.ChannelContactData,
 ) error {
 	queryTimestamp := time.Now()
-	fmt.Printf("check channel %s (%s).. %v online", channel.Title, channel.ID, len(contacts))
-	fmt.Println()
+	//fmt.Printf("check channel %s (%s).. %v online", channel.Title, channel.ID, len(contacts))
+	//fmt.Println()
 
 	for _, contact := range contacts {
 		if contact.PubkeyHash == b.BotPubkeyHash {
