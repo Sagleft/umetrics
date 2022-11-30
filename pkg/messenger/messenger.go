@@ -1,7 +1,7 @@
 package messenger
 
 import (
-	"bot/memory"
+	"bot/pkg/memory"
 
 	utopiago "github.com/Sagleft/utopialib-go"
 )

@@ -5,9 +5,10 @@ import (
 	"log"
 	"time"
 
-	"bot/config"
-	"bot/memory"
-	"bot/messenger"
+	"bot/pkg/config"
+	"bot/pkg/frontend"
+	"bot/pkg/memory"
+	"bot/pkg/messenger"
 
 	swissknife "github.com/Sagleft/swiss-knife"
 )
@@ -23,6 +24,7 @@ const (
 )
 
 type bot struct {
+	Frontend      frontend.Frontend
 	Memory        memory.Memory
 	Messenger     messenger.Messenger
 	Handlers      botCrons
@@ -58,7 +60,13 @@ func main() {
 	}
 
 	fmt.Println("setup frontend..")
-	if b.setupFrontend(); err != nil {
+
+	b.Frontend, err = frontend.NewGINFrontend()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if err := b.Frontend.Run(); err != nil {
 		log.Fatalln(err)
 	}
 }

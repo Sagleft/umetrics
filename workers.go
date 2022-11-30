@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bot/memory"
+	"bot/pkg/memory"
 	"fmt"
 	"time"
 

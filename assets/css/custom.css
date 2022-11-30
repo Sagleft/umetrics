@@ -1,0 +1,10 @@
+body {
+    background-color: #f2f2f2;
+    min-height: 100vh;
+}
+
+.success-block {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+}
