@@ -109,16 +109,18 @@ func (b *bot) findPeers() {
 			return
 		}
 
-		if !isExists {
-			if err := b.Memory.SavePeer(memory.Peer{
-				Direction: peer.Direction,
-				IP:        peerAddress[0],
-				Lat:       "", // TODO
-				Lon:       "", // TODO
-			}); err != nil {
-				color.Red("save peer: %s", err.Error())
-				return
-			}
+		if isExists {
+			continue
+		}
+
+		if err := b.Memory.SavePeer(memory.Peer{
+			Direction: peer.Direction,
+			IP:        peerAddress[0],
+			Lat:       "", // TODO
+			Lon:       "", // TODO
+		}); err != nil {
+			color.Red("save peer: %s", err.Error())
+			return
 		}
 	}
 }
