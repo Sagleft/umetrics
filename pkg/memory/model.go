@@ -7,7 +7,7 @@ import (
 )
 
 var models = []interface{}{
-	&User{}, &Channel{}, &ChannelUserRelation{},
+	&User{}, &Channel{}, &ChannelUserRelation{}, &Peer{},
 }
 
 type User struct {
@@ -53,4 +53,14 @@ type ChannelUserRelation struct {
 
 func (ChannelUserRelation) TableName() string {
 	return "channel_contacts"
+}
+
+type Peer struct {
+	gorm.Model
+
+	Direction int
+	IP        string
+	Port      int
+	Lat       string
+	Lon       string
 }

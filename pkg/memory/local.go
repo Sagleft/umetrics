@@ -101,3 +101,22 @@ func (db *localDB) DeleteRelation(r ChannelUserRelation) error {
 	result := db.conn.Delete(&r)
 	return result.Error
 }
+
+func (db *localDB) IsPeerExists(p Peer) (bool, error) {
+	return db.isEntryExists(&p, &Peer{})
+}
+
+func (db *localDB) SavePeer(p Peer) error {
+	return db.conn.Save(&p).Error
+}
+
+func (db *localDB) GetPeers() ([]Peer, error) {
+	peers := []Peer{}
+	result := db.conn.Find(&peers)
+	return peers, result.Error
+}
+
+func (db *localDB) DeletePeer(p Peer) error {
+	result := db.conn.Delete(&p)
+	return result.Error
+}

@@ -2,60 +2,38 @@ package messenger
 
 import (
 	"bot/pkg/memory"
-	"time"
 
-	utopiago "github.com/Sagleft/utopialib-go"
-	"github.com/beefsack/go-rate"
-)
-
-const (
-	maxGetChannelsTasks        = 5
-	maxGetChannelDataTasks     = 5
-	maxJoinChannelTasks        = 5  // per second
-	maxGetChannelContactsTasks = 10 // per second
+	utopiago "github.com/Sagleft/utopialib-go/v2"
+	uconsts "github.com/Sagleft/utopialib-go/v2/pkg/consts"
+	uerrors "github.com/Sagleft/utopialib-go/v2/pkg/errors"
+	ustructs "github.com/Sagleft/utopialib-go/v2/pkg/structs"
 )
 
 type utopia struct {
-	client   *utopiago.UtopiaClient
-	limiters rateLimiters
+	client utopiago.Client
 }
 
-type rateLimiters struct {
-	GetChannels        *rate.RateLimiter
-	JoinChannel        *rate.RateLimiter
-	GetChannelContacts *rate.RateLimiter
-	GetChannelData     *rate.RateLimiter
-}
-
-func NewUtopiaMessenger(clientData utopiago.UtopiaClient) Messenger {
+func NewUtopiaMessenger(clientData utopiago.Config) Messenger {
 	return &utopia{
-		client: &clientData,
-		limiters: rateLimiters{
-			GetChannels:        rate.New(maxGetChannelsTasks, time.Second),
-			JoinChannel:        rate.New(maxJoinChannelTasks, time.Second),
-			GetChannelContacts: rate.New(maxGetChannelContactsTasks, time.Second),
-			GetChannelData:     rate.New(maxGetChannelDataTasks, time.Second),
-		},
+		client: utopiago.NewUtopiaClient(clientData),
 	}
 }
 
 func (u *utopia) GetChannels() ([]memory.Channel, error) {
-	u.limiters.GetChannels.Wait()
-
-	channels, err := u.client.GetChannels(utopiago.GetChannelsTask{
-		SortBy: utopiago.SortChannelsByModified,
+	channels, err := u.client.GetChannels(ustructs.GetChannelsTask{
+		SortBy: uconsts.SortChannelsByModified,
 	})
 	if err == nil {
 		return convertChannelsData(channels)
 	}
 
-	if !utopiago.CheckErrorConnBroken(err) {
+	if !uerrors.CheckErrorConnBroken(err) {
 		return nil, err
 	}
 
 	reconnect(func() error {
-		channels, err = u.client.GetChannels(utopiago.GetChannelsTask{
-			SortBy: utopiago.SortChannelsByModified,
+		channels, err = u.client.GetChannels(ustructs.GetChannelsTask{
+			SortBy: uconsts.SortChannelsByModified,
 		})
 		return err
 	})
@@ -63,7 +41,7 @@ func (u *utopia) GetChannels() ([]memory.Channel, error) {
 	return convertChannelsData(channels)
 }
 
-func convertChannelsData(channels []utopiago.SearchChannelData) ([]memory.Channel, error) {
+func convertChannelsData(channels []ustructs.SearchChannelData) ([]memory.Channel, error) {
 	var err error
 	r := make([]memory.Channel, len(channels))
 	for i := len(channels) - 1; i >= 0; i-- {
@@ -86,15 +64,13 @@ func convertChannelsData(channels []utopiago.SearchChannelData) ([]memory.Channe
 	return r, nil
 }
 
-func (u *utopia) GetChannelContacts(channelID string) ([]utopiago.ChannelContactData, error) {
-	u.limiters.GetChannelContacts.Wait()
-
+func (u *utopia) GetChannelContacts(channelID string) ([]ustructs.ChannelContactData, error) {
 	contacts, err := u.client.GetChannelContacts(channelID)
 	if err == nil {
 		return contacts, nil
 	}
 
-	if !utopiago.CheckErrorConnBroken(err) {
+	if !uerrors.CheckErrorConnBroken(err) {
 		return nil, err
 	}
 
@@ -106,14 +82,12 @@ func (u *utopia) GetChannelContacts(channelID string) ([]utopiago.ChannelContact
 }
 
 func (u *utopia) JoinChannel(channelID, password string) error {
-	u.limiters.JoinChannel.Wait()
-
 	_, err := u.client.JoinChannel(channelID, password)
 	if err == nil {
 		return nil
 	}
 
-	if !utopiago.CheckErrorConnBroken(err) {
+	if !uerrors.CheckErrorConnBroken(err) {
 		return err
 	}
 
@@ -125,17 +99,17 @@ func (u *utopia) JoinChannel(channelID, password string) error {
 }
 
 func (u *utopia) GetJoinedChannels() (map[string]struct{}, error) {
-	channels, err := u.client.GetChannels(utopiago.GetChannelsTask{
-		ChannelType: utopiago.ChannelTypeJoined,
+	channels, err := u.client.GetChannels(ustructs.GetChannelsTask{
+		ChannelType: uconsts.ChannelTypeJoined,
 	})
 	if err != nil {
-		if !utopiago.CheckErrorConnBroken(err) {
+		if !uerrors.CheckErrorConnBroken(err) {
 			return nil, err
 		}
 
 		reconnect(func() error {
-			channels, err = u.client.GetChannels(utopiago.GetChannelsTask{
-				ChannelType: utopiago.ChannelTypeJoined,
+			channels, err = u.client.GetChannels(ustructs.GetChannelsTask{
+				ChannelType: uconsts.ChannelTypeJoined,
 			})
 			return err
 		})
@@ -145,7 +119,7 @@ func (u *utopia) GetJoinedChannels() (map[string]struct{}, error) {
 	return convertChannelIDs(channels), nil
 }
 
-func convertChannelIDs(channels []utopiago.SearchChannelData) map[string]struct{} {
+func convertChannelIDs(channels []ustructs.SearchChannelData) map[string]struct{} {
 	channelIDs := make(map[string]struct{})
 	for _, data := range channels {
 		channelIDs[data.ChannelID] = struct{}{}
@@ -159,7 +133,7 @@ func (u *utopia) ToogleChannelNotifications(channelID string, enabled bool) erro
 		return nil
 	}
 
-	if !utopiago.CheckErrorConnBroken(err) {
+	if !uerrors.CheckErrorConnBroken(err) {
 		return err
 	}
 
@@ -169,11 +143,11 @@ func (u *utopia) ToogleChannelNotifications(channelID string, enabled bool) erro
 	return nil
 }
 
-func (u *utopia) GetOwnContact() (utopiago.OwnContactData, error) {
+func (u *utopia) GetOwnContact() (ustructs.OwnContactData, error) {
 	data, err := u.client.GetOwnContact()
 	if err != nil {
-		if !utopiago.CheckErrorConnBroken(err) {
-			return utopiago.OwnContactData{}, err
+		if !uerrors.CheckErrorConnBroken(err) {
+			return ustructs.OwnContactData{}, err
 		}
 
 		reconnect(func() error {
@@ -186,13 +160,11 @@ func (u *utopia) GetOwnContact() (utopiago.OwnContactData, error) {
 	return data, nil
 }
 
-func (u *utopia) GetChannelData(channelID string) (utopiago.ChannelData, error) {
-	u.limiters.GetChannelData.Wait()
-
+func (u *utopia) GetChannelData(channelID string) (ustructs.ChannelData, error) {
 	data, err := u.client.GetChannelInfo(channelID)
 	if err != nil {
-		if !utopiago.CheckErrorConnBroken(err) {
-			return utopiago.ChannelData{}, err
+		if !uerrors.CheckErrorConnBroken(err) {
+			return ustructs.ChannelData{}, err
 		}
 
 		reconnect(func() error {
@@ -202,5 +174,22 @@ func (u *utopia) GetChannelData(channelID string) (utopiago.ChannelData, error) 
 		return data, nil
 	}
 
+	return data, nil
+}
+
+func (u *utopia) GetNetworkConnections(channelID string) ([]ustructs.PeerInfo, error) {
+	data, err := u.client.GetNetworkConnections(channelID)
+	if err == nil {
+		return data, nil
+	}
+
+	if !uerrors.CheckErrorConnBroken(err) {
+		return nil, err
+	}
+
+	reconnect(func() error {
+		data, err = u.client.GetNetworkConnections(channelID)
+		return err
+	})
 	return data, nil
 }

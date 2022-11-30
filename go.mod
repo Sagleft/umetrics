@@ -4,9 +4,10 @@ go 1.18
 
 require (
 	github.com/Sagleft/swiss-knife v1.2.0
-	github.com/Sagleft/utopialib-go v1.11.0
-	github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0
+	github.com/Sagleft/utopialib-go v1.12.0
+	github.com/Sagleft/utopialib-go/v2 v2.0.2
 	github.com/fatih/color v1.13.0
+	github.com/gin-gonic/gin v1.8.1
 	github.com/sagleft/simple-cron v1.4.1
 	github.com/stretchr/testify v1.8.1
 	gorm.io/driver/sqlite v1.4.3
@@ -14,10 +15,10 @@ require (
 )
 
 require (
+	github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0 // indirect
 	github.com/ctengiz/evtwebsocket v0.0.0-20180717104640-fc3583982591 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.8.1 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.11.1 // indirect

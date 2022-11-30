@@ -13,4 +13,9 @@ type Memory interface {
 	SaveRelation(ChannelUserRelation) error
 	GetRelations() ([]ChannelUserRelation, error)
 	DeleteRelation(ChannelUserRelation) error
+
+	IsPeerExists(Peer) (bool, error)
+	SavePeer(Peer) error
+	GetPeers() ([]Peer, error)
+	DeletePeer(Peer) error
 }

@@ -3,15 +3,16 @@ package messenger
 import (
 	"bot/pkg/memory"
 
-	utopiago "github.com/Sagleft/utopialib-go"
+	ustructs "github.com/Sagleft/utopialib-go/v2/pkg/structs"
 )
 
 type Messenger interface {
 	GetChannels() ([]memory.Channel, error)
-	GetChannelContacts(channelID string) ([]utopiago.ChannelContactData, error)
+	GetChannelContacts(channelID string) ([]ustructs.ChannelContactData, error)
 	JoinChannel(channelID, password string) error
 	GetJoinedChannels() (map[string]struct{}, error)
 	ToogleChannelNotifications(channelID string, enabled bool) error
-	GetOwnContact() (utopiago.OwnContactData, error)
-	GetChannelData(channelID string) (utopiago.ChannelData, error)
+	GetOwnContact() (ustructs.OwnContactData, error)
+	GetChannelData(channelID string) (ustructs.ChannelData, error)
+	GetNetworkConnections(channelID string) ([]ustructs.PeerInfo, error)
 }

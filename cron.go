@@ -22,6 +22,8 @@ type botCrons struct {
 	ChannelContacts    *cronContainer
 	FindChannels       *cronContainer
 	RemoveOldRelations *cronContainer
+	FindPeers          *cronContainer
+	RemoveOldPeers     *cronContainer
 }
 
 func setupCronHandler(callback func(), timeout time.Duration, startImmediate bool) *cronContainer {
@@ -79,4 +81,12 @@ func (b *bot) removeOldRelations() {
 			}
 		}
 	}
+}
+
+func (b *bot) findPeers() {
+
+}
+
+func (b *bot) removeOldPeers() {
+
 }

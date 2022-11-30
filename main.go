@@ -20,12 +20,17 @@ const (
 	checkChannelContactsTimeout = time.Minute * 10
 	findChannelsTimeout         = time.Minute * 15
 	removeOldRelationsTimeout   = time.Minute * 5
+	findPeersTimeout            = time.Minute * 5
+	removeOldPeersTimeout       = time.Minute * 5
 
 	maxRelationDuration = time.Hour * 24 * 7
+	maxPeerDuration     = time.Hour * 24 * 7
 
 	checkStatsAtStart         = true
 	findChannelsAtStart       = false
 	removeOldRelationsAtStart = false
+	findPeersAtStart          = true
+	removeOldPeersAtStart     = false
 
 	queueDefaultMaxCapacity = 3000
 )
@@ -110,6 +115,8 @@ func (b *bot) run() error {
 		ChannelContacts:    setupCronHandler(b.checkStats, checkChannelContactsTimeout, checkStatsAtStart),
 		FindChannels:       setupCronHandler(b.findChannels, findChannelsTimeout, findChannelsAtStart),
 		RemoveOldRelations: setupCronHandler(b.removeOldRelations, removeOldRelationsTimeout, removeOldRelationsAtStart),
+		FindPeers:          setupCronHandler(b.findPeers, findPeersTimeout, findPeersAtStart),
+		RemoveOldPeers:     setupCronHandler(b.removeOldPeers, removeOldPeersTimeout, removeOldPeersAtStart),
 	}
 	return nil
 }
