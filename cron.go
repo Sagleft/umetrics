@@ -100,9 +100,10 @@ func (b *bot) findPeers() {
 		}
 
 		peerAddress := strings.Split(peer.Address, ":")
+		peerIP := peerAddress[0]
 
 		isExists, err := b.Memory.IsPeerExists(memory.Peer{
-			IP: peerAddress[0],
+			IP: peerIP,
 		})
 		if err != nil {
 			color.Red("check peer exists in db: %s", err.Error())
@@ -113,15 +114,23 @@ func (b *bot) findPeers() {
 			continue
 		}
 
+		coord, err := b.Locator.GetCoordinates(peerIP)
+		if err != nil {
+			color.Red("get peer coord: %s", err.Error())
+			return
+		}
+
 		if err := b.Memory.SavePeer(memory.Peer{
 			Direction: peer.Direction,
-			IP:        peerAddress[0],
-			Lat:       "", // TODO
-			Lon:       "", // TODO
+			IP:        peerIP,
+			Lat:       coord.Lat,
+			Lon:       coord.Lon,
 		}); err != nil {
 			color.Red("save peer: %s", err.Error())
 			return
 		}
+
+		color.Green("peer saved: %s", peerIP)
 	}
 }
 

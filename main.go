@@ -7,6 +7,7 @@ import (
 
 	"bot/pkg/config"
 	"bot/pkg/frontend"
+	"bot/pkg/locator"
 	"bot/pkg/memory"
 	"bot/pkg/messenger"
 
@@ -38,6 +39,7 @@ const (
 type bot struct {
 	Frontend      frontend.Frontend
 	Memory        memory.Memory
+	Locator       locator.Locator
 	Messenger     messenger.Messenger
 	Handlers      botCrons
 	Workers       queueWorkers
@@ -86,6 +88,7 @@ func main() {
 func newBot(cfg config.Config, db memory.Memory) (*bot, error) {
 	return &bot{
 		Memory:    db,
+		Locator:   locator.NewDefaultLocator(),
 		Messenger: messenger.NewUtopiaMessenger(cfg.Utopia),
 	}, nil
 }
