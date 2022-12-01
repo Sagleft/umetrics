@@ -1,18 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 	{{block "head" .}} {{end}}
-	<body>
+	<body class="uk-dark">
 		<br/>
-		<div class="uk-container uk-width-xlarge wrap uk-padding uk-border-rounded">
-			<div class="uk-text-center success-block uk-box-shadow-medium">
-				<img src="/assets/img/success.png" />
-				<h2>Everything is working</h2>
-				<p>Your first Go web app</p>
+		<div class="uk-container wrap uk-border-rounded">
 
-				<a href="/showcase" class="uk-button uk-button-primary uk-border-rounded">Showcase</a>
-			<div>
+			<div class="uk-child-width-expand@s uk-text-center uk-grid-match" uk-grid>
+				<div>
+					<div class="uk-card uk-card-body blured-block">Item</div>
+				</div>
+				<div>
+					<div class="uk-card uk-card-body blured-block">
+						
+						<div id="globe-indicator"></div>
+
+					</div>
+				</div>
+			</div>
+
 		</div>
 		
+		<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+		<script src="https://cdn.amcharts.com/lib/5/map.js"></script>
+		<script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
+		<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+		<script src="assets/js/globe.js"></script>
+
 		{{block "scripts" .}} {{end}}
 	</body>
 </html>
