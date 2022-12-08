@@ -112,7 +112,7 @@ func (db *localDB) SavePeer(p Peer) error {
 
 func (db *localDB) GetPeers() ([]Peer, error) {
 	peers := []Peer{}
-	result := db.conn.Select("lon", "lat", "city").Find(&peers)
+	result := db.conn.Select("lon", "lat", "city").Limit(maxPeersPerRequest).Find(&peers)
 	return peers, result.Error
 }
 
