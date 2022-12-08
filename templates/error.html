@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+	{{block "head" .}} {{end}}
+	<body class="uk-light">
+		<br/>
+		<div class="uk-container uk-width-xlarge wrap uk-padding uk-border-rounded">
+			<div class="uk-text-center success-block uk-box-shadow-medium">
+				
+				<div class="uk-card uk-card-body blured-block">
+					<img src="/assets/img/firstsatellite.png" style="max-width: 256px;" />
+					<h2>{{ .code }}: {{ .errorTitle }}</h2>
+					<p>{{ .errorInfo }}</p>
+	
+					<a href="/" class="uk-button uk-button-primary uk-border-rounded">Home</a>
+				</div>
+				
+			<div>
+		</div>
+		
+		{{block "scripts" .}} {{end}}
+	</body>
+</html>

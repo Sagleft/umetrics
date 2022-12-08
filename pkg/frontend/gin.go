@@ -44,19 +44,50 @@ func (f *ginFront) renderTemplate(c *gin.Context, code int, name string, obj int
 }
 
 func (f *ginFront) renderNotFoundPage(c *gin.Context) {
+	f.renderErrorPage(c, http.StatusNotFound, "page not found")
+}
+
+func (f *ginFront) renderErrorPage(c *gin.Context, statusCode int, errInfo string) {
 	f.renderTemplate(
 		c,
-		http.StatusNotFound,
-		"404.html",
-		gin.H{},
+		statusCode,
+		"error.html",
+		gin.H{
+			"code":       statusCode,
+			"errorTitle": getErrorTitle(statusCode),
+			"errorInfo":  errInfo,
+		},
 	)
 }
 
+func (f *ginFront) renderError(c *gin.Context, err error) {
+	f.renderErrorPage(c, http.StatusInternalServerError, err.Error())
+}
+
+func getErrorTitle(statusCode int) string {
+	switch statusCode {
+	default:
+		return "UNKNOWN"
+	case 404:
+		return "NOT FOUND"
+	case 500:
+		return "Internal error"
+	}
+}
+
 func (f *ginFront) renderHomePage(c *gin.Context) {
+	peers, err := f.Memory.GetPeers()
+	if err != nil {
+		f.renderError(c, err)
+		return
+	}
+
 	f.renderTemplate(
 		c,
 		http.StatusOK,
 		"home.html",
-		gin.H{},
+		gin.H{
+			"peers": peers,
+		},
 	)
 }
