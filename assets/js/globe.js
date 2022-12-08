@@ -4,13 +4,11 @@ am5.ready(function() {
 // https://www.amcharts.com/docs/v5/getting-started/#Root_element
 var root = am5.Root.new("globe-indicator");
 
-
 // Set themes
 // https://www.amcharts.com/docs/v5/concepts/themes/
 root.setThemes([
   am5themes_Animated.new(root)
 ]);
-
 
 // Create the map chart
 // https://www.amcharts.com/docs/v5/charts/map-chart/
@@ -19,7 +17,6 @@ var chart = root.container.children.push(am5map.MapChart.new(root, {
   panY: "rotateY",
   projection: am5map.geoOrthographic()
 }));
-
 
 // Create series for background fill
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-polygon-series/#Background_polygon
@@ -36,33 +33,36 @@ backgroundSeries.data.push({
     am5map.getGeoRectangle(90, 180, -90, -180)
 });
 
+// Create series for background fill
+// https://www.amcharts.com/docs/v5/charts/map-chart/map-polygon-series/#Background_polygon
+var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
+backgroundSeries.mapPolygons.template.setAll({
+  fill: root.interfaceColors.get("alternativeBackground"),
+  fillOpacity: 0.15,
+  strokeWidth: 0.2,
+  stroke: root.interfaceColors.get("background")
+});
+
+// Add background polygon
+// https://www.amcharts.com/docs/v5/charts/map-chart/map-polygon-series/#Background_polygon
+backgroundSeries.data.push({
+  geometry: am5map.getGeoRectangle(90, 180, -90, -180)
+});
 
 // Create main polygon series for countries
 // https://www.amcharts.com/docs/v5/charts/map-chart/map-polygon-series/
-var polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
-polygonSeries.data.push({
-  geometry: {
-    type: "Polygon",
-    coordinates: [
-      [
-        [26.5936, 55.6676],
-        [26.175, 55.0033],
-        [25.8594, 54.9192],
-        [25.5473, 54.3317],
-        [24.7683, 53.9746],
-        [23.4845, 53.9398],
-        [23.37, 54.2005],
-        [22.7663, 54.3568],
-        [22.8311, 54.8384],
-        [21.2358, 55.2641],
-        [21.0462, 56.07],
-        [22.0845, 56.4067],
-        [24.1206, 56.2642],
-        [24.9032, 56.3982],
-        [26.5936, 55.6676]
-      ]
-    ]
-  }
+var polygonSeries = chart.series.push(
+  am5map.MapPolygonSeries.new(root, {
+    geoJSON: am5geodata_worldLow
+  })
+);
+
+// Create line series for trajectory lines
+// https://www.amcharts.com/docs/v5/charts/map-chart/map-line-series/
+var lineSeries = chart.series.push(am5map.MapLineSeries.new(root, {}));
+lineSeries.mapLines.template.setAll({
+  stroke: root.interfaceColors.get("alternativeBackground"),
+  strokeOpacity: 0.1
 });
 
 polygonSeries.mapPolygons.template.setAll({
@@ -71,7 +71,6 @@ polygonSeries.mapPolygons.template.setAll({
   strokeWidth: 0.5,
   stroke: root.interfaceColors.get("background")
 });
-
 
 // Create polygon series for projected circles
 var circleSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
@@ -83,26 +82,44 @@ circleSeries.mapPolygons.template.setAll({
 // Define data
 var colors = am5.ColorSet.new(root, {});
 
-var data = [
-  { "id": "AF", "name": "Afghanistan", "value": 32358260, polygonTemplate: { fill: colors.getIndex(0) } },
-  { "id": "AL", "name": "Albania", "value": 3215988, polygonTemplate: { fill: colors.getIndex(8) } },
-  { "id": "DZ", "name": "Algeria", "value": 35980193, polygonTemplate: { fill: colors.getIndex(2) } },
-  { "id": "AO", "name": "Angola", "value": 19618432, polygonTemplate: { fill: colors.getIndex(2) } },
-  { "id": "AR", "name": "Argentina", "value": 40764561, polygonTemplate: { fill: colors.getIndex(3) } },
-  { "id": "AM", "name": "Armenia", "value": 3100236, polygonTemplate: { fill: colors.getIndex(8) } },
+// Create point series for markers
+// https://www.amcharts.com/docs/v5/charts/map-chart/map-point-series/
+var pointSeries = chart.series.push(am5map.MapPointSeries.new(root, {}));
+
+pointSeries.bullets.push(function () {
+  var circle = am5.Circle.new(root, {
+    radius: 4,
+    tooltipY: 0,
+    fill: am5.color(0x35c875),
+    stroke: root.interfaceColors.get("background"),
+    strokeWidth: 2,
+    strokeOpacity: 0.75,
+    tooltipText: "{title}"
+  });
+
+  return am5.Bullet.new(root, {
+    sprite: circle
+  });
+});
+
+let systemPeers = [
+  {
+    title: "test",
+    lon: 57.543822516535954,
+    lat: 53.04595275606475,
+  },
 ];
 
-var valueLow = Infinity;
-var valueHigh = -Infinity;
+for (var i = 0; i < systemPeers.length; i++) {
+  var peer = systemPeers[i];
+  addCity(peer.lon, peer.lat, peer.title);
+}
 
-for (var i = 0; i < data.length; i++) {
-  var value = data[i].value;
-  if (value < valueLow) {
-    valueLow = value;
-  }
-  if (value > valueHigh) {
-    valueHigh = value;
-  }
+function addCity(lon, lat, title) {
+  pointSeries.data.push({
+    geometry: { type: "Point", coordinates: [lon, lat] },
+    title: title
+  });
 }
 
 // radius in degrees
