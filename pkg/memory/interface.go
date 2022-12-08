@@ -16,6 +16,7 @@ type Memory interface {
 
 	IsPeerExists(Peer) (bool, error)
 	SavePeer(Peer) error
+	GetPeer(Peer) (Peer, error)
 	GetPeers() ([]Peer, error)
 	DeletePeer(Peer) error
 }

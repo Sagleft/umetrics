@@ -2,6 +2,8 @@ package frontend
 
 import (
 	"bot/pkg/memory"
+	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -64,21 +66,16 @@ func (f *ginFront) renderError(c *gin.Context, err error) {
 	f.renderErrorPage(c, http.StatusInternalServerError, err.Error())
 }
 
-func getErrorTitle(statusCode int) string {
-	switch statusCode {
-	default:
-		return "UNKNOWN"
-	case 404:
-		return "NOT FOUND"
-	case 500:
-		return "Internal error"
-	}
-}
-
 func (f *ginFront) renderHomePage(c *gin.Context) {
 	peers, err := f.Memory.GetPeers()
 	if err != nil {
 		f.renderError(c, err)
+		return
+	}
+
+	peersBytes, err := json.Marshal(peers)
+	if err != nil {
+		f.renderError(c, fmt.Errorf("encode peers data: %w", err))
 		return
 	}
 
@@ -87,7 +84,7 @@ func (f *ginFront) renderHomePage(c *gin.Context) {
 		http.StatusOK,
 		"home.html",
 		gin.H{
-			"peers": peers,
+			"peersData": string(peersBytes),
 		},
 	)
 }

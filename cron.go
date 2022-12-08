@@ -121,6 +121,7 @@ func (b *bot) findPeers() {
 		}
 
 		if err := b.Memory.SavePeer(memory.Peer{
+			City:      coord.City,
 			Direction: peer.Direction,
 			IP:        peerIP,
 			Lat:       coord.Lat,

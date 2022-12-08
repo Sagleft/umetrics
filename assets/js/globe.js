@@ -104,7 +104,7 @@ pointSeries.bullets.push(function () {
 
 for (var i = 0; i < systemPeers.length; i++) {
   var peer = systemPeers[i];
-  addCity(peer.lon, peer.lat, peer.title);
+  addCity(peer.lon, peer.lat, peer.city);
 }
 
 function addCity(lon, lat, title) {

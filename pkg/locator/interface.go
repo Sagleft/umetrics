@@ -5,6 +5,7 @@ type Locator interface {
 }
 
 type Coordinates struct {
-	Lat float64 `json:"latitude"`
-	Lon float64 `json:"longitude"`
+	City string  `json:"city"`
+	Lat  float64 `json:"latitude"`
+	Lon  float64 `json:"longitude"`
 }

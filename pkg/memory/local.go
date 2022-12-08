@@ -112,11 +112,17 @@ func (db *localDB) SavePeer(p Peer) error {
 
 func (db *localDB) GetPeers() ([]Peer, error) {
 	peers := []Peer{}
-	result := db.conn.Find(&peers)
+	result := db.conn.Select("lon", "lat", "city").Find(&peers)
 	return peers, result.Error
 }
 
 func (db *localDB) DeletePeer(p Peer) error {
 	result := db.conn.Delete(&p)
 	return result.Error
+}
+
+func (db *localDB) GetPeer(p Peer) (Peer, error) {
+	peer := Peer{}
+	result := db.conn.Where(&p).First(&peer)
+	return peer, result.Error
 }

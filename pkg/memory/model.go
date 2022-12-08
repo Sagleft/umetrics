@@ -58,8 +58,9 @@ func (ChannelUserRelation) TableName() string {
 type Peer struct {
 	gorm.Model
 
-	Direction int
-	IP        string
-	Lat       float64
-	Lon       float64
+	City      string  `gorm:"column:city" json:"city"`
+	Direction int     `gorm:"column:direction" json:"-"`
+	IP        string  `gorm:"column:IP" json:"-"`
+	Lat       float64 `gorm:"column:lat" json:"lat"`
+	Lon       float64 `gorm:"column:lon" json:"lon"`
 }
