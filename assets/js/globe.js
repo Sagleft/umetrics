@@ -102,14 +102,6 @@ pointSeries.bullets.push(function () {
   });
 });
 
-let systemPeers = [
-  {
-    title: "test",
-    lon: 57.543822516535954,
-    lat: 53.04595275606475,
-  },
-];
-
 for (var i = 0; i < systemPeers.length; i++) {
   var peer = systemPeers[i];
   addCity(peer.lon, peer.lat, peer.title);
@@ -121,36 +113,6 @@ function addCity(lon, lat, title) {
     title: title
   });
 }
-
-// radius in degrees
-var minRadius = 0.5;
-var maxRadius = 5;
-
-// Create circles when data for countries is fully loaded.
-/*polygonSeries.events.on("datavalidated", function () {
-  circleSeries.data.clear();
-
-  for (var i = 0; i < data.length; i++) {
-    var dataContext = data[i];
-    var countryDataItem = polygonSeries.getDataItemById(dataContext.id);
-    var countryPolygon = countryDataItem.get("mapPolygon");
-
-    var value = dataContext.value;
-
-    var radius = minRadius + maxRadius * (value - valueLow) / (valueHigh - valueLow);
-
-    if (countryPolygon) {
-      var geometry = am5map.getGeoCircle(countryPolygon.visualCentroid(), radius);
-      circleSeries.data.push({
-        name: dataContext.name,
-        value: dataContext.value,
-        polygonTemplate: dataContext.polygonTemplate,
-        geometry: geometry
-      });
-    }
-  }
-})*/
-
 
 // Make stuff animate on load
 chart.appear(1000, 100);
