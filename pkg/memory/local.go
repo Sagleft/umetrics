@@ -65,6 +65,12 @@ func (db *localDB) IsChannelExists(channelID string) (bool, error) {
 	}, &Channel{})
 }
 
+func (db *localDB) GetChannelsCount() (int64, error) {
+	var channelsCount int64
+	result := db.conn.Model(&Channel{}).Count(&channelsCount)
+	return channelsCount, result.Error
+}
+
 func (db *localDB) SaveChannel(c Channel) error {
 	return db.conn.Save(&c).Error
 }

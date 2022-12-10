@@ -3,6 +3,7 @@ package memory
 type Memory interface {
 	IsChannelExists(channelID string) (bool, error)
 	SaveChannel(Channel) error
+	GetChannelsCount() (int64, error)
 
 	IsUserExists(User) (bool, error)
 	SaveUser(User) error
