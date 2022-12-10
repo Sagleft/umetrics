@@ -1,14 +1,17 @@
 package memory
 
+import "time"
+
 type Memory interface {
 	IsChannelExists(channelID string) (bool, error)
 	SaveChannel(Channel) error
 	GetChannelsCount() (int64, error)
+	GetChannels() ([]Channel, error)
 
 	IsUserExists(User) (bool, error)
-	SaveUser(User) error
-
-	GetChannels() ([]Channel, error)
+	AddUser(User) error
+	UpdateUserLastSeen(u User, lastSeen time.Time) error
+	GetUsersCount() (int64, error)
 
 	IsRelationExists(ChannelUserRelation) (bool, error)
 	SaveRelation(ChannelUserRelation) error

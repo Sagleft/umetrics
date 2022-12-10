@@ -24,14 +24,14 @@ func (b *bot) saveUser(u memory.User) error {
 	if err != nil {
 		return err
 	}
+	if isUserKnown {
+		return b.Memory.UpdateUserLastSeen(u, time.Now())
+	}
 
-	if err := b.Memory.SaveUser(u); err != nil {
+	if err := b.Memory.AddUser(u); err != nil {
 		return err
 	}
-
-	if !isUserKnown {
-		color.Green("new user saved: %s", u.Nickname)
-	}
+	color.Green("new user saved: %s", u.Nickname)
 	return nil
 }
 

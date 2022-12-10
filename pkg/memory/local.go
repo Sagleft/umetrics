@@ -79,8 +79,18 @@ func (db *localDB) IsUserExists(u User) (bool, error) {
 	return db.isEntryExists(&u, &User{})
 }
 
-func (db *localDB) SaveUser(u User) error {
+func (db *localDB) AddUser(u User) error {
 	return db.conn.Save(&u).Error
+}
+
+func (db *localDB) UpdateUserLastSeen(u User, lastSeen time.Time) error {
+	return db.conn.Model(&u).Where("pubkey_hash", u.PubkeyHash).Update("last_seen", lastSeen).Error
+}
+
+func (db *localDB) GetUsersCount() (int64, error) {
+	var usersCount int64
+	result := db.conn.Model(&User{}).Count(&usersCount)
+	return usersCount, result.Error
 }
 
 func (db *localDB) GetChannels() ([]Channel, error) {
@@ -123,7 +133,7 @@ func (db *localDB) GetPeers() ([]Peer, error) {
 }
 
 func (db *localDB) DeletePeer(p Peer) error {
-	result := db.conn.Delete(&p)
+	result := db.conn.Where("IP", p.IP).Delete(&p)
 	return result.Error
 }
 

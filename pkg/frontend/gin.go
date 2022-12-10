@@ -79,6 +79,12 @@ func (f *ginFront) renderHomePage(c *gin.Context) {
 		return
 	}
 
+	usersCount, err := f.Memory.GetUsersCount()
+	if err != nil {
+		f.renderError(c, err)
+		return
+	}
+
 	peersBytes, err := json.Marshal(peers)
 	if err != nil {
 		f.renderError(c, fmt.Errorf("encode peers data: %w", err))
@@ -92,6 +98,7 @@ func (f *ginFront) renderHomePage(c *gin.Context) {
 		gin.H{
 			"peersData":     string(peersBytes),
 			"channelsCount": channelsCount,
+			"usersCount":    usersCount,
 		},
 	)
 }

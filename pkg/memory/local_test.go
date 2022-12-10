@@ -14,7 +14,7 @@ func TestUserExists(t *testing.T) {
 
 	userPubkeyHash := "BAEB92BC6E8144F2D15E977A878ABFAC"
 
-	err = db.SaveUser(User{
+	err = db.AddUser(User{
 		PubkeyHash: userPubkeyHash,
 		Nickname:   "Tester",
 		LastSeen:   time.Now(),

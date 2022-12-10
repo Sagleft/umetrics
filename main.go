@@ -28,10 +28,10 @@ const (
 	maxPeerDuration     = time.Hour * 24 * 7
 
 	checkStatsAtStart         = true
-	findChannelsAtStart       = false
+	findChannelsAtStart       = true
 	removeOldRelationsAtStart = false
 	findPeersAtStart          = true
-	removeOldPeersAtStart     = false
+	removeOldPeersAtStart     = true
 
 	queueDefaultMaxCapacity = 3000
 )
