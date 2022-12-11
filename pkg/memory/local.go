@@ -142,3 +142,11 @@ func (db *localDB) GetPeer(p Peer) (Peer, error) {
 	result := db.conn.Where(&p).First(&peer)
 	return peer, result.Error
 }
+
+func (db *localDB) GetTopChannels(count int) ([]ChannelOnline, error) {
+	data := []ChannelOnline{}
+
+	result := db.conn.Raw("SELECT COUNT(c.id) AS contactsCount,c.title FROM channels c INNER JOIN channel_contacts cc ON cc.channel_id=c.id GROUP BY c.id ORDER BY contactsCount DESC LIMIT ?", count).Scan(&data)
+
+	return data, result.Error
+}

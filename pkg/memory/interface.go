@@ -7,6 +7,7 @@ type Memory interface {
 	SaveChannel(Channel) error
 	GetChannelsCount() (int64, error)
 	GetChannels() ([]Channel, error)
+	GetTopChannels(count int) ([]ChannelOnline, error)
 
 	IsUserExists(User) (bool, error)
 	AddUser(User) error

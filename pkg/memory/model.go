@@ -18,10 +18,6 @@ type User struct {
 	LastSeen   time.Time `gorm:"column:last_seen" json:"last_seen"`
 }
 
-func (User) TableName() string {
-	return "users"
-}
-
 type Channel struct {
 	gorm.Model
 
@@ -38,10 +34,6 @@ type Channel struct {
 	ReadOnlyPrivacy bool      `gorm:"column:readonly_privacy;default:false"`
 }
 
-func (Channel) TableName() string {
-	return "channels"
-}
-
 type ChannelUserRelation struct {
 	gorm.Model
 
@@ -49,10 +41,6 @@ type ChannelUserRelation struct {
 	UserPubkeyHash string    `gorm:"type:varchar(32);column:contact_pubkey_hash" json:"contact_pubkey_hash"`
 	IsModerator    bool      `gorm:"type:bool;default:false;column:is_moderator" json:"is_moderator"`
 	LastSeen       time.Time `gorm:"column:last_seen" json:"last_seen"`
-}
-
-func (ChannelUserRelation) TableName() string {
-	return "channel_contacts"
 }
 
 type Peer struct {
@@ -63,4 +51,21 @@ type Peer struct {
 	IP        string  `gorm:"column:IP" json:"-"`
 	Lat       float64 `gorm:"column:lat" json:"lat"`
 	Lon       float64 `gorm:"column:lon" json:"lon"`
+}
+
+type ChannelOnline struct {
+	ContactsCount int64  `gorm:"column:contactsCount" json:"contactsCount"`
+	Title         string `gorm:"title" json:"title"`
+}
+
+func (User) TableName() string {
+	return "users"
+}
+
+func (Channel) TableName() string {
+	return "channels"
+}
+
+func (ChannelUserRelation) TableName() string {
+	return "channel_contacts"
 }

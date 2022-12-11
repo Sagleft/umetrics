@@ -2,8 +2,6 @@ package frontend
 
 import (
 	"bot/pkg/memory"
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -37,8 +35,19 @@ func (f *ginFront) setupRoutes() error {
 	f.Gin.Static("/assets", "./assets")
 
 	f.Gin.GET("/", f.renderHomePage)
+	f.Gin.GET("geoData.json", f.renderGeoData)
 	f.Gin.NoRoute(f.renderNotFoundPage)
 	return nil
+}
+
+func (f *ginFront) renderGeoData(c *gin.Context) {
+	peers, err := f.Memory.GetPeers()
+	if err != nil {
+		f.renderError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, peers)
 }
 
 func (f *ginFront) renderTemplate(c *gin.Context, code int, name string, obj interface{}) {
@@ -67,12 +76,6 @@ func (f *ginFront) renderError(c *gin.Context, err error) {
 }
 
 func (f *ginFront) renderHomePage(c *gin.Context) {
-	peers, err := f.Memory.GetPeers()
-	if err != nil {
-		f.renderError(c, err)
-		return
-	}
-
 	channelsCount, err := f.Memory.GetChannelsCount()
 	if err != nil {
 		f.renderError(c, err)
@@ -85,9 +88,9 @@ func (f *ginFront) renderHomePage(c *gin.Context) {
 		return
 	}
 
-	peersBytes, err := json.Marshal(peers)
+	topChannels, err := f.Memory.GetTopChannels(maxTopChannels)
 	if err != nil {
-		f.renderError(c, fmt.Errorf("encode peers data: %w", err))
+		f.renderError(c, err)
 		return
 	}
 
@@ -96,9 +99,9 @@ func (f *ginFront) renderHomePage(c *gin.Context) {
 		http.StatusOK,
 		"home.html",
 		gin.H{
-			"peersData":     string(peersBytes),
 			"channelsCount": channelsCount,
 			"usersCount":    usersCount,
+			"topChannels":   topChannels,
 		},
 	)
 }
