@@ -2,7 +2,12 @@ package frontend
 
 import (
 	"bot/pkg/memory"
+	"crypto/md5"
+	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,15 +15,22 @@ import (
 type ginFront struct {
 	Gin    *gin.Engine
 	Memory memory.Memory
+
+	filehashes map[string]string
 }
 
 func NewGINFrontend(db memory.Memory) (Frontend, error) {
 	f := &ginFront{
-		Gin:    gin.Default(),
-		Memory: db,
+		Gin:        gin.Default(),
+		Memory:     db,
+		filehashes: make(map[string]string),
 	}
-	f.setupRoutes()
 
+	if err := f.hashFiles(); err != nil {
+		return nil, err
+	}
+
+	f.setupRoutes()
 	return f, nil
 }
 
@@ -38,6 +50,31 @@ func (f *ginFront) setupRoutes() error {
 	f.Gin.GET("geoData.json", f.renderGeoData)
 	f.Gin.NoRoute(f.renderNotFoundPage)
 	return nil
+}
+
+func (f *ginFront) hashFiles() error {
+	for _, filePath := range frontFilesToHash {
+		file, err := os.Open(filePath)
+		if err != nil {
+			return fmt.Errorf("read file to get hash: %w", err)
+		}
+
+		defer file.Close()
+
+		hash := md5.New()
+		_, err = io.Copy(hash, file)
+		if err != nil {
+			return fmt.Errorf("get file hash: %w", err)
+		}
+
+		f.filehashes[getFileHashName(file)] = string(hash.Sum(nil))
+	}
+
+	return nil
+}
+
+func getFileHashName(file *os.File) string {
+	return strings.ReplaceAll(file.Name(), ".", "_")
 }
 
 func (f *ginFront) renderGeoData(c *gin.Context) {
@@ -64,6 +101,7 @@ func (f *ginFront) renderErrorPage(c *gin.Context, statusCode int, errInfo strin
 		statusCode,
 		"error.html",
 		gin.H{
+			"version":    f.filehashes,
 			"code":       statusCode,
 			"errorTitle": getErrorTitle(statusCode),
 			"errorInfo":  errInfo,
@@ -99,6 +137,7 @@ func (f *ginFront) renderHomePage(c *gin.Context) {
 		http.StatusOK,
 		"home.html",
 		gin.H{
+			"version":       f.filehashes,
 			"channelsCount": channelsCount,
 			"usersCount":    usersCount,
 			"topChannels":   topChannels,
