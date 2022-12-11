@@ -63,18 +63,10 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	fmt.Println("load account data..")
-	if err := b.loadOwnContact(); err != nil {
-		log.Fatalln(err)
-	}
-
 	fmt.Println("start..")
-	if b.run(); err != nil {
-		log.Fatalln(err)
-	}
+	go b.run()
 
 	fmt.Println("setup frontend..")
-
 	b.Frontend, err = frontend.NewGINFrontend(db)
 	if err != nil {
 		log.Fatalln(err)
@@ -103,7 +95,13 @@ func (b *bot) loadOwnContact() error {
 	return nil
 }
 
-func (b *bot) run() error {
+func (b *bot) run() {
+	fmt.Println("load account data..")
+	if err := b.loadOwnContact(); err != nil {
+		log.Println(err)
+		return
+	}
+
 	// setup queues
 	b.Workers = queueWorkers{
 		CheckStats: swissknife.NewChannelWorker(
@@ -121,5 +119,4 @@ func (b *bot) run() error {
 		FindPeers:          setupCronHandler(b.findPeers, findPeersTimeout, findPeersAtStart),
 		RemoveOldPeers:     setupCronHandler(b.removeOldPeers, removeOldPeersTimeout, removeOldPeersAtStart),
 	}
-	return nil
 }
