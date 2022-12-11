@@ -150,3 +150,11 @@ func (db *localDB) GetTopChannels(count int) ([]ChannelOnline, error) {
 
 	return data, result.Error
 }
+
+func (db *localDB) GetTopUsers(count int) ([]UserOnline, error) {
+	data := []UserOnline{}
+
+	result := db.conn.Raw("SELECT COUNT(cc.id) AS channelsCount,u.nickname FROM users u INNER JOIN channel_contacts cc ON cc.contact_pubkey_hash=u.pubkey_hash GROUP BY u.id ORDER BY channelsCount DESC LIMIT ?", count).Scan(&data)
+
+	return data, result.Error
+}

@@ -13,6 +13,7 @@ type Memory interface {
 	AddUser(User) error
 	UpdateUserLastSeen(u User, lastSeen time.Time) error
 	GetUsersCount() (int64, error)
+	GetTopUsers(count int) ([]UserOnline, error)
 
 	IsRelationExists(ChannelUserRelation) (bool, error)
 	SaveRelation(ChannelUserRelation) error

@@ -2,6 +2,7 @@ package frontend
 
 const (
 	maxTopChannels = 10
+	maxTopUsers    = 10
 )
 
 var (

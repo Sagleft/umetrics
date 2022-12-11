@@ -57,11 +57,18 @@
 				</div>
 				<div>
 					<div class="uk-card uk-card-body blured-block">
-						
-						<h4>The most social</h4>
-						<ul class="uk-list uk-list-divider">
-							<li>TODO</li>
-						</ul>
+
+						<h4>The most social users</h4>
+						<div class="text-left">
+							<ul class="uk-list uk-list-collapse uk-list-divider">
+								{{range .topUsers}}
+									<li>
+										<span uk-icon="user"></span>
+										<span>{{.Nickname}}: {{.Channels}}</span>
+									</li>
+								{{end}}
+							</ul>
+						</div>
 
 					</div>
 				</div>

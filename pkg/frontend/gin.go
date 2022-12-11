@@ -132,6 +132,12 @@ func (f *ginFront) renderHomePage(c *gin.Context) {
 		return
 	}
 
+	topUsers, err := f.Memory.GetTopUsers(maxTopUsers)
+	if err != nil {
+		f.renderError(c, err)
+		return
+	}
+
 	f.renderTemplate(
 		c,
 		http.StatusOK,
@@ -141,6 +147,7 @@ func (f *ginFront) renderHomePage(c *gin.Context) {
 			"channelsCount": channelsCount,
 			"usersCount":    usersCount,
 			"topChannels":   topChannels,
+			"topUsers":      topUsers,
 		},
 	)
 }
