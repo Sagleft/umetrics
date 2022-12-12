@@ -3,10 +3,12 @@ package frontend
 import (
 	"bot/pkg/memory"
 	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -67,14 +69,19 @@ func (f *ginFront) hashFiles() error {
 			return fmt.Errorf("get file hash: %w", err)
 		}
 
-		f.filehashes[getFileHashName(file)] = string(hash.Sum(nil))
+		fileHash := hex.EncodeToString(hash.Sum(nil))
+		fileTag := getFileHashName(file)
+
+		f.filehashes[fileTag] = fileHash
+		fmt.Printf("compute %q hash: %s. saved as %q\n", filePath, fileHash, fileTag)
 	}
 
+	fmt.Println()
 	return nil
 }
 
 func getFileHashName(file *os.File) string {
-	return strings.ReplaceAll(file.Name(), ".", "_")
+	return strings.ReplaceAll(filepath.Base(file.Name()), ".", "_")
 }
 
 func (f *ginFront) renderGeoData(c *gin.Context) {

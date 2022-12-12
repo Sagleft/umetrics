@@ -18,7 +18,7 @@ const (
 	configJSONPath = "config.json"
 	dbFilename     = "memory.db"
 
-	checkChannelContactsTimeout = time.Minute * 10
+	checkChannelContactsTimeout = time.Minute * 3
 	findChannelsTimeout         = time.Minute * 15
 	removeOldRelationsTimeout   = time.Minute * 5
 	findPeersTimeout            = time.Minute * 5
