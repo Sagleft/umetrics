@@ -7,7 +7,7 @@ import (
 )
 
 var models = []interface{}{
-	&User{}, &Channel{}, &ChannelUserRelation{}, &Peer{},
+	&User{}, &Channel{}, &ChannelUserRelation{}, &Peer{}, &ChannelStats{},
 }
 
 type User struct {
@@ -63,6 +63,14 @@ type UserOnline struct {
 	Nickname string `gorm:"column:nickname" json:"nickname"`
 }
 
+// Channel statistics at a particular point in time
+type ChannelStats struct {
+	gorm.Model
+
+	ID     string `gorm:"column:channel_id" json:"channel_id"`
+	Online int    `gorm:"column:online" json:"online"`
+}
+
 func (User) TableName() string {
 	return "users"
 }
@@ -73,4 +81,8 @@ func (Channel) TableName() string {
 
 func (ChannelUserRelation) TableName() string {
 	return "channel_contacts"
+}
+
+func (ChannelStats) TableName() string {
+	return "channel_stats"
 }

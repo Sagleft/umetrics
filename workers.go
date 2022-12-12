@@ -117,6 +117,14 @@ func (b *bot) handleCheckStatsTask(event interface{}) {
 		return
 	}
 
+	if err := b.Memory.SaveChannelStats(memory.ChannelStats{
+		ID:     e.Channel.ID,
+		Online: e.Channel.LastOnline,
+	}); err != nil {
+		color.Red(err.Error())
+		return
+	}
+
 	// PROCESS CHANNEL CONTACTS
 	if len(contacts) > 0 {
 		if err := b.processChannelContacts(e.Channel, contacts); err != nil {

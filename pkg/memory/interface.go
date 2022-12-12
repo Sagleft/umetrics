@@ -26,4 +26,6 @@ type Memory interface {
 	GetPeer(Peer) (Peer, error)
 	GetPeers() ([]Peer, error)
 	DeletePeer(Peer) error
+
+	SaveChannelStats(ChannelStats) error
 }
