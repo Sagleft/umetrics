@@ -11,7 +11,7 @@ type Memory interface {
 
 	IsUserExists(User) (bool, error)
 	AddUser(User) error
-	UpdateUserLastSeen(u User, lastSeen time.Time) error
+	UpdateUserData(u User, lastSeen time.Time, nickname string) error
 	GetUsersCount() (int64, error)
 	GetTopUsers(count int) ([]UserOnline, error)
 

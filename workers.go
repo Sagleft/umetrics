@@ -25,7 +25,7 @@ func (b *bot) saveUser(u memory.User) error {
 		return err
 	}
 	if isUserKnown {
-		return b.Memory.UpdateUserLastSeen(u, time.Now())
+		return b.Memory.UpdateUserData(u, time.Now(), u.Nickname)
 	}
 
 	if err := b.Memory.AddUser(u); err != nil {

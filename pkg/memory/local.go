@@ -83,8 +83,12 @@ func (db *localDB) AddUser(u User) error {
 	return db.conn.Save(&u).Error
 }
 
-func (db *localDB) UpdateUserLastSeen(u User, lastSeen time.Time) error {
-	return db.conn.Model(&u).Where("pubkey_hash", u.PubkeyHash).Update("last_seen", lastSeen).Error
+func (db *localDB) UpdateUserData(u User, lastSeen time.Time, nickname string) error {
+	return db.conn.Model(&u).Where("pubkey_hash", u.PubkeyHash).
+		Updates(User{
+			Nickname: nickname,
+			LastSeen: lastSeen,
+		}).Error
 }
 
 func (db *localDB) GetUsersCount() (int64, error) {
