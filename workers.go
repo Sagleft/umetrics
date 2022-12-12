@@ -95,6 +95,26 @@ func (b *bot) handleCheckStatsTask(event interface{}) {
 		return
 	}
 
+	// check channel owner
+	isUserExists, err := b.Memory.IsUserExists(memory.User{
+		PubkeyHash: e.Channel.OwnerPubkeyHash,
+	})
+	if err != nil {
+		color.Red(err.Error())
+		return
+	}
+	if !isUserExists {
+		// the channel owner is not saved as a user
+		if err := b.saveUser(memory.User{
+			PubkeyHash: e.Channel.OwnerPubkeyHash,
+			Nickname:   e.Channel.Title + " Admin",
+			LastSeen:   e.Channel.CreatedOn,
+		}); err != nil {
+			color.Red(err.Error())
+			return
+		}
+	}
+
 	// get channel online
 	contacts, err := b.Messenger.GetChannelContacts(e.Channel.ID)
 	if err != nil {
