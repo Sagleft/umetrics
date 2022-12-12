@@ -166,3 +166,12 @@ func (db *localDB) UpdateRelationLastSeen(r ChannelUserRelation, lastSeen time.T
 func (db *localDB) SaveChannelStats(s ChannelStats) error {
 	return db.conn.Save(&s).Error
 }
+
+func (db *localDB) GetChannelOwners(count int) ([]ChannelOwner, error) {
+	data := []ChannelOwner{}
+
+	//result := db.conn.Raw("SELECT AVG(cs.online) AS avgOnline").Scan(&data)
+	result := db.conn.Raw("SELECT COUNT(c.id) AS channelsCount,u.nickname FROM users u INNER JOIN channels c ON c.owner_hash=u.pubkey_hash GROUP BY u.pubkey_hash ORDER BY channelsCount DESC LIMIT ?", count).Scan(&data)
+
+	return data, result.Error
+}

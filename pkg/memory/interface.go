@@ -28,4 +28,6 @@ type Memory interface {
 	DeletePeer(Peer) error
 
 	SaveChannelStats(ChannelStats) error
+
+	GetChannelOwners(count int) ([]ChannelOwner, error)
 }

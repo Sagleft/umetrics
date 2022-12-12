@@ -71,6 +71,11 @@ type ChannelStats struct {
 	Online int    `gorm:"column:online" json:"online"`
 }
 
+type ChannelOwner struct {
+	Channels int    `gorm:"column:channelsCount" json:"channelsCount"`
+	Nickname string `gorm:"column:nickname" json:"nickname"`
+}
+
 func (User) TableName() string {
 	return "users"
 }

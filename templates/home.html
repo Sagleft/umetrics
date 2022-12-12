@@ -57,9 +57,24 @@
 					<div class="uk-card uk-card-body blured-block">
 						
 						<h4>Channel owners</h4>
-						<ul class="uk-list uk-list-divider">
-							<li>TODO</li>
-						</ul>
+						<table class="uk-table uk-table-hover uk-table-divider uk-table-small">
+							<thead>
+								<tr>
+									<th><span uk-icon="user"></span></th>
+									<th>channels</th>
+								</tr>
+							</thead>
+							<tbody>
+								{{range .owners}}
+									<tr>
+										<td class="text-left">
+											<span>{{.Nickname}}</span>
+										</td>
+										<td>{{.Channels}}</td>
+									</tr>
+								{{end}}
+							</tbody>
+						</table>
 
 					</div>
 				</div>
