@@ -43,7 +43,9 @@
 							<tbody>
 								{{range .topChannels}}
 									<tr>
-										<td class="text-left">{{.Title}}</td>
+										<td class="text-left">
+											<a href="ut://joinChannelById?{{.ID}}">{{.Title}}</a>
+										</td>
 										<td>{{.ContactsCount}}</td>
 										<td>?</td>
 									</tr>

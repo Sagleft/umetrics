@@ -54,6 +54,7 @@ type Peer struct {
 }
 
 type ChannelOnline struct {
+	ID            string `gorm:"column:id" json:"id"`
 	ContactsCount int64  `gorm:"column:contactsCount" json:"contactsCount"`
 	Title         string `gorm:"column:title" json:"title"`
 }

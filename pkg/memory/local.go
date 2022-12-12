@@ -150,7 +150,7 @@ func (db *localDB) GetPeer(p Peer) (Peer, error) {
 func (db *localDB) GetTopChannels(count int) ([]ChannelOnline, error) {
 	data := []ChannelOnline{}
 
-	result := db.conn.Raw("SELECT COUNT(c.id) AS contactsCount,c.title FROM channels c INNER JOIN channel_contacts cc ON cc.channel_id=c.id GROUP BY c.id ORDER BY contactsCount DESC LIMIT ?", count).Scan(&data)
+	result := db.conn.Raw("SELECT COUNT(c.id) AS contactsCount,c.title,c.id FROM channels c INNER JOIN channel_contacts cc ON cc.channel_id=c.id GROUP BY c.id ORDER BY contactsCount DESC LIMIT ?", count).Scan(&data)
 
 	return data, result.Error
 }
