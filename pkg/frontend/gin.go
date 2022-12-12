@@ -127,7 +127,7 @@ func (f *ginFront) renderHomePage(c *gin.Context) {
 		return
 	}
 
-	usersCount, err := f.Memory.GetUsersCount()
+	usersCount, err := f.Memory.GetUsersCount(activeUsersDaysInterval)
 	if err != nil {
 		f.renderError(c, err)
 		return

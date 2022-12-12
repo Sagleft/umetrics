@@ -12,7 +12,7 @@ type Memory interface {
 	IsUserExists(User) (bool, error)
 	AddUser(User) error
 	UpdateUserData(u User, lastSeen time.Time, nickname string) error
-	GetUsersCount() (int64, error)
+	GetUsersCount(daysInterval int) (int, error)
 	GetTopUsers(count int) ([]UserOnline, error)
 
 	IsRelationExists(ChannelUserRelation) (bool, error)

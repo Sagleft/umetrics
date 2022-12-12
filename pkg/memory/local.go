@@ -91,9 +91,9 @@ func (db *localDB) UpdateUserData(u User, lastSeen time.Time, nickname string) e
 		}).Error
 }
 
-func (db *localDB) GetUsersCount() (int64, error) {
-	var usersCount int64
-	result := db.conn.Model(&User{}).Count(&usersCount)
+func (db *localDB) GetUsersCount(daysInterval int) (int, error) {
+	var usersCount int
+	result := db.conn.Raw("SELECT COUNT(*) AS usersCount FROM users WHERE last_seen >= datetime('now' , '-3 days')", daysInterval).Scan(&usersCount)
 	return usersCount, result.Error
 }
 

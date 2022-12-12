@@ -1,9 +1,10 @@
 package frontend
 
 const (
-	maxTopChannels = 10
-	maxTopUsers    = 10
-	maxTopOwners   = 10
+	maxTopChannels          = 10
+	maxTopUsers             = 10
+	maxTopOwners            = 10
+	activeUsersDaysInterval = 7
 )
 
 var (
