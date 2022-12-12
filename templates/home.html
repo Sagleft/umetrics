@@ -32,16 +32,24 @@
 					<div class="uk-card uk-card-body blured-block">
 						
 						<h4>The biggest channels</h4>
-						<div class="text-left">
-							<ul class="uk-list uk-list-collapse uk-list-divider">
+						<table class="uk-table uk-table-hover uk-table-divider uk-table-small">
+							<thead>
+								<tr>
+									<th><span uk-icon="comment"></span></th>
+									<th><span uk-icon="user"></span></th>
+									<th><span uk-icon="tag"></span>$</th>
+								</tr>
+							</thead>
+							<tbody>
 								{{range .topChannels}}
-									<li>
-										<span uk-icon="comment"></span>
-										<span>{{.Title}}: {{.ContactsCount}}</span>
-									</li>
+									<tr>
+										<td class="text-left">{{.Title}}</td>
+										<td>{{.ContactsCount}}</td>
+										<td>?</td>
+									</tr>
 								{{end}}
-							</ul>
-						</div>
+							</tbody>
+						</table>
 
 					</div>
 				</div>
