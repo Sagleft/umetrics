@@ -54,13 +54,13 @@ type Peer struct {
 }
 
 type ChannelOnline struct {
-	ContactsCount int64
-	Title         string
+	ContactsCount int64  `gorm:"column:contactsCount" json:"contactsCount"`
+	Title         string `gorm:"column:title" json:"title"`
 }
 
 type UserOnline struct {
-	Channels int64
-	Nickname string
+	Channels int64  `gorm:"column:channelsCount" json:"channelsCount"`
+	Nickname string `gorm:"column:nickname" json:"nickname"`
 }
 
 func (User) TableName() string {

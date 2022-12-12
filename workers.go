@@ -56,6 +56,12 @@ func (b *bot) saveUserRelation(channel memory.Channel, contact ustructs.ChannelC
 	if err != nil {
 		return err
 	}
+	if isExists {
+		b.Memory.UpdateRelationLastSeen(memory.ChannelUserRelation{
+			UserPubkeyHash: contact.PubkeyHash,
+		}, time.Now())
+		return nil
+	}
 
 	if err := b.Memory.SaveRelation(memory.ChannelUserRelation{
 		ChannelID:      channel.ID,

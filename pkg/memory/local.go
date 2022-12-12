@@ -158,3 +158,7 @@ func (db *localDB) GetTopUsers(count int) ([]UserOnline, error) {
 
 	return data, result.Error
 }
+
+func (db *localDB) UpdateRelationLastSeen(r ChannelUserRelation, lastSeen time.Time) error {
+	return db.conn.Model(&r).Where("contact_pubkey_hash", r.UserPubkeyHash).Update("last_seen", lastSeen).Error
+}

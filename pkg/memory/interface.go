@@ -17,6 +17,7 @@ type Memory interface {
 
 	IsRelationExists(ChannelUserRelation) (bool, error)
 	SaveRelation(ChannelUserRelation) error
+	UpdateRelationLastSeen(r ChannelUserRelation, lastSeen time.Time) error
 	GetRelations() ([]ChannelUserRelation, error)
 	DeleteRelation(ChannelUserRelation) error
 
