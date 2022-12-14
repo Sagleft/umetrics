@@ -1,9 +1,13 @@
 # umetrics
 
-сборка
+WEB3.0 channel catalog in Utopia Ecosystem 
+
+![logo](assets/img/screen.png)
+
+build
 
 ```bash
 go build
 ```
 
-1. папки `templates` и `assets` идут в папку со сборкой.
+`templates` & `assets` must be placed in release directory.
