@@ -19,3 +19,4 @@ config.json
 memory.db
 test.db
 memory.db-journal
+build_win.sh
